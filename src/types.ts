@@ -27,7 +27,6 @@ export interface CompanyInfo {
   accountNumber: string;
   accountHolder: string;
   invoiceNumber?: string;
-  logoImage?: string;
 }
 
 // 取引先情報

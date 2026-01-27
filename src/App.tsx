@@ -36,7 +36,6 @@ function App() {
         accountNumber: '',
         accountHolder: '',
         invoiceNumber: '',
-        logoImage: '',
       },
       clientInfo: {
         companyName: '',

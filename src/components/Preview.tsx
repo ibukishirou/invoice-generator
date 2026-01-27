@@ -86,7 +86,12 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
         {/* 取引先・自社情報 */}
         <div className={styles.documentBody}>
           <div className={styles.clientSection}>
-            <div className={styles.sectionTitle}>請求先</div>
+            <div className={styles.sectionTitle}>
+              {data.documentType === DOCUMENT_TYPES.INVOICE && '請求先'}
+              {data.documentType === DOCUMENT_TYPES.PURCHASE_ORDER && '発注先'}
+              {data.documentType === DOCUMENT_TYPES.ESTIMATE && '見積先'}
+              {data.documentType === DOCUMENT_TYPES.DELIVERY && '納品先'}
+            </div>
             {data.clientInfo.companyName && <div>{data.clientInfo.companyName}</div>}
             {data.clientInfo.address && <div>{data.clientInfo.address}</div>}
             <div>{data.clientInfo.contactPerson}</div>
@@ -101,13 +106,6 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
             {data.documentType !== DOCUMENT_TYPES.PURCHASE_ORDER && data.companyInfo.invoiceNumber && (
               <div>登録番号: {data.companyInfo.invoiceNumber}</div>
             )}
-            {data.companyInfo.logoImage && (
-              <img
-                src={data.companyInfo.logoImage}
-                alt="Company Logo"
-                className={styles.companyLogo}
-              />
-            )}
           </div>
         </div>
 
@@ -117,10 +115,14 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
             <span className={styles.dateLabel}>発行日:</span>
             <span>{formatDateJapanese(data.documentInfo.issueDate)}</span>
           </div>
-          <div className={styles.dateItem}>
-            <span className={styles.dateLabel}>支払期限:</span>
-            <span>{formatDateJapanese(data.documentInfo.paymentDueDate)}</span>
-          </div>
+          {data.documentType !== DOCUMENT_TYPES.DELIVERY && data.documentInfo.paymentDueDate && (
+            <div className={styles.dateItem}>
+              <span className={styles.dateLabel}>
+                {data.documentType === DOCUMENT_TYPES.INVOICE ? '支払期限:' : '有効期限:'}
+              </span>
+              <span>{formatDateJapanese(data.documentInfo.paymentDueDate)}</span>
+            </div>
+          )}
         </div>
 
         {/* 明細テーブル */}
@@ -166,7 +168,7 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
         </div>
 
         {/* 振込先情報 */}
-        {data.documentType !== DOCUMENT_TYPES.PURCHASE_ORDER && (
+        {data.documentType === DOCUMENT_TYPES.INVOICE && (
           <div className={styles.notesSection}>
             <div className={styles.notesTitle}>お振込先</div>
             <div>
@@ -189,8 +191,9 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* エクスポート設定（独立した操作エリア） */}
+      {/* エクスポート設定（プレビュー下部） */}
       <div className={styles.exportContainer}>
+        <h3 className={styles.exportTitle}>出力</h3>
         <div className={styles.exportSection}>
           <div className={styles.exportRow}>
             <label className={styles.fileNameLabel}>ファイル名:</label>

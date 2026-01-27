@@ -244,6 +244,15 @@
   margin-top: 24px;
 }
 
+.exportTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
 .fileNameLabel {
   font-size: 14px;
   font-weight: 600;

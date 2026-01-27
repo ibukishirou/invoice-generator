@@ -10,7 +10,6 @@ import {
   DocumentInfo,
 } from '../types';
 import { getCurrentDate, getNextMonthEnd, generateDocumentNumber } from '../utils/dateUtils';
-import { convertImageToBase64 } from '../utils/fileUtils';
 import { DOCUMENT_TYPES, TAX_TYPES } from '../config';
 
 interface InputFormProps {
@@ -20,7 +19,6 @@ interface InputFormProps {
 }
 
 const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
-  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const updateCompanyInfo = (updates: Partial<CompanyInfo>) => {
     onChange({
@@ -69,34 +67,7 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
     onChange({ ...data, items: newItems });
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
 
-    try {
-      const base64 = await convertImageToBase64(file);
-      setImageFile(file);
-      updateCompanyInfo({ logoImage: base64 });
-    } catch (error) {
-      console.error('Failed to upload image:', error);
-      alert('画像のアップロードに失敗しました');
-    }
-  };
-
-  const removeImage = () => {
-    setImageFile(null);
-    updateCompanyInfo({ logoImage: undefined });
-  };
-
-  const handleGenerateDocumentNumber = () => {
-    if (!data.documentInfo.documentNumber) {
-      updateDocumentInfo({ documentNumber: generateDocumentNumber() });
-    }
-  };
-
-  React.useEffect(() => {
-    handleGenerateDocumentNumber();
-  }, []);
 
   return (
     <div className={styles.formContainer}>
@@ -257,27 +228,6 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
           />
           </div>
         )}
-        <div className={styles.imageUpload}>
-          <label className={styles.label}>ロゴ / 印鑑画像</label>
-          <input
-            type="file"
-            id="logo-upload"
-            className={styles.fileInput}
-            accept="image/*"
-            onChange={handleImageUpload}
-          />
-          <label htmlFor="logo-upload" className={styles.fileLabel}>
-            画像を選択
-          </label>
-          {data.companyInfo.logoImage && (
-            <div className={styles.imagePreview}>
-              <img src={data.companyInfo.logoImage} alt="Logo" />
-              <button className={styles.removeImageButton} onClick={removeImage}>
-                削除
-              </button>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* 取引先情報 */}
@@ -327,7 +277,7 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
             className={styles.input}
             value={data.documentInfo.documentNumber}
             onChange={(e) => updateDocumentInfo({ documentNumber: e.target.value })}
-            placeholder="未入力の場合は自動生成されます"
+            placeholder="例：1"
           />
         </div>
         <div className={styles.row}>
@@ -342,18 +292,22 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
               onChange={(e) => updateDocumentInfo({ issueDate: e.target.value })}
             />
           </div>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              {data.documentType === DOCUMENT_TYPES.PURCHASE_ORDER ? '納品期限' : '支払期限'}
-              <span className={styles.required}>*</span>
-            </label>
-            <input
-              type="date"
-              className={styles.input}
-              value={data.documentInfo.paymentDueDate}
-              onChange={(e) => updateDocumentInfo({ paymentDueDate: e.target.value })}
-            />
-          </div>
+          {data.documentType !== DOCUMENT_TYPES.DELIVERY && (
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                {data.documentType === DOCUMENT_TYPES.INVOICE 
+                  ? '支払期限' 
+                  : '有効期限'}
+                {data.documentType === DOCUMENT_TYPES.INVOICE && <span className={styles.required}>*</span>}
+              </label>
+              <input
+                type="date"
+                className={styles.input}
+                value={data.documentInfo.paymentDueDate}
+                onChange={(e) => updateDocumentInfo({ paymentDueDate: e.target.value })}
+              />
+            </div>
+          )}
         </div>
         <div className={styles.formGroup}>
           <label className={styles.label}>備考</label>
@@ -398,21 +352,29 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
               <div className={styles.formGroup}>
                 <label className={styles.label}>数量</label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   className={styles.input}
                   value={item.quantity}
-                  onChange={(e) => updateItem(index, { quantity: Number(e.target.value) || 1 })}
-                  min="1"
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    updateItem(index, { quantity: Number(value) || 1 });
+                  }}
                 />
               </div>
               <div className={styles.formGroup}>
                 <label className={styles.label}>単価</label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   className={styles.input}
                   value={item.unitPrice}
-                  onChange={(e) => updateItem(index, { unitPrice: Number(e.target.value) || 0 })}
-                  min="0"
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    updateItem(index, { unitPrice: Number(value) || 0 });
+                  }}
                 />
               </div>
               <div className={styles.formGroup}>

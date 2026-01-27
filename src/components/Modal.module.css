@@ -1,4 +1,4 @@
-.modalOverlay {
+.overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -12,7 +12,7 @@
   padding: 20px;
 }
 
-.modalContent {
+.content {
   background: #fff;
   border-radius: 16px;
   padding: 32px;
@@ -23,7 +23,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-.modalHeader {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -32,7 +32,7 @@
   border-bottom: 2px solid #e0e0e0;
 }
 
-.modalTitle {
+.title {
   font-size: 20px;
   font-weight: 600;
   color: #333;
@@ -79,12 +79,19 @@
   color: #5c7cfa;
 }
 
-.tab.active {
+.activeTab {
   color: #5c7cfa;
   border-bottom-color: #5c7cfa;
 }
 
-.listContainer {
+.body {
+  min-height: 200px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -106,25 +113,29 @@
   background: #f0f4ff;
 }
 
-.listItemInfo {
+.itemInfo {
   flex: 1;
 }
 
-.listItemTitle {
+.itemTitle {
   font-size: 16px;
   font-weight: 600;
   color: #333;
   margin-bottom: 4px;
 }
 
-.listItemMeta {
+.itemDate {
   font-size: 13px;
-  color: #666;
-  display: flex;
-  gap: 16px;
+  color: #999;
+  margin-bottom: 4px;
 }
 
-.listItemActions {
+.itemDetails {
+  font-size: 13px;
+  color: #666;
+}
+
+.itemActions {
   display: flex;
   gap: 8px;
 }
@@ -173,10 +184,22 @@
   font-size: 16px;
 }
 
-.saveForm {
+.inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.required {
+  color: #e74c3c;
+  margin-left: 4px;
 }
 
 .input {
@@ -195,48 +218,65 @@
   box-shadow: 0 0 0 3px rgba(92, 124, 250, 0.1);
 }
 
-.buttonGroup {
-  display: flex;
-  gap: 12px;
+.error {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 4px;
 }
 
-.primaryButton,
-.secondaryButton {
-  flex: 1;
-  padding: 12px;
-  border: none;
+.info {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.info p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.cancelButton {
+  padding: 12px 24px;
+  border: 2px solid #ddd;
   border-radius: 10px;
+  background: #fff;
+  color: #666;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.primaryButton {
-  background: #5c7cfa;
-  color: #fff;
+.cancelButton:hover {
+  background: #f0f0f0;
 }
 
-.primaryButton:hover {
+.saveButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background: #5c7cfa;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saveButton:hover {
   background: #4c6ef5;
 }
 
-.primaryButton:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.secondaryButton {
-  background: #f0f0f0;
-  color: #666;
-}
-
-.secondaryButton:hover {
-  background: #e0e0e0;
-}
-
 @media (max-width: 768px) {
-  .modalContent {
+  .content {
     padding: 24px;
     max-height: 90vh;
   }
