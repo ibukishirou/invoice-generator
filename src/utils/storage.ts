@@ -1,15 +1,11 @@
 import { config } from '../config';
-import { CompanyInfo, SavedDocument, DocumentHistory, InvoiceData, HistoryItem } from '../types';
-
-// LocalStorage ユーティリティ
+import { CompanyInfo, SavedDocument, InvoiceData, HistoryItem } from '../types';
+import * as jsonManager from './jsonManager';
 
 // 自社情報の保存
 export const saveCompanyInfo = (companyInfo: CompanyInfo): void => {
   try {
-    localStorage.setItem(
-      config.storageKeys.companyInfo,
-      JSON.stringify(companyInfo)
-    );
+    jsonManager.updateCompanyInfo(companyInfo);
   } catch (error) {
     console.error('Failed to save company info:', error);
   }
@@ -18,8 +14,7 @@ export const saveCompanyInfo = (companyInfo: CompanyInfo): void => {
 // 自社情報の読み込み
 export const loadCompanyInfo = (): CompanyInfo | null => {
   try {
-    const data = localStorage.getItem(config.storageKeys.companyInfo);
-    return data ? JSON.parse(data) : null;
+    return jsonManager.getCompanyInfo();
   } catch (error) {
     console.error('Failed to load company info:', error);
     return null;
@@ -29,7 +24,6 @@ export const loadCompanyInfo = (): CompanyInfo | null => {
 // 名前付き保存
 export const saveDocument = (data: InvoiceData, name: string): void => {
   try {
-    const saved = loadSavedDocuments();
     const newDocument: SavedDocument = {
       id: Date.now().toString(),
       name,
@@ -37,17 +31,7 @@ export const saveDocument = (data: InvoiceData, name: string): void => {
       savedAt: new Date().toISOString(),
     };
 
-    saved.unshift(newDocument);
-
-    // 最大件数を超えたら古いものを削除
-    if (saved.length > config.maxSavedDocuments) {
-      saved.splice(config.maxSavedDocuments);
-    }
-
-    localStorage.setItem(
-      config.storageKeys.savedDocuments,
-      JSON.stringify(saved)
-    );
+    jsonManager.addSavedDocument(newDocument, config.maxSavedDocuments);
   } catch (error) {
     console.error('Failed to save document:', error);
   }
@@ -56,8 +40,7 @@ export const saveDocument = (data: InvoiceData, name: string): void => {
 // 保存された書類一覧の読み込み
 export const loadSavedDocuments = (): HistoryItem[] => {
   try {
-    const data = localStorage.getItem(config.storageKeys.savedDocuments);
-    return data ? JSON.parse(data) : [];
+    return jsonManager.getSavedDocuments();
   } catch (error) {
     console.error('Failed to load saved documents:', error);
     return [];
@@ -67,12 +50,7 @@ export const loadSavedDocuments = (): HistoryItem[] => {
 // 保存された書類の削除
 export const deleteSavedDocument = (id: string): void => {
   try {
-    const saved = loadSavedDocuments();
-    const filtered = saved.filter((doc) => doc.id !== id);
-    localStorage.setItem(
-      config.storageKeys.savedDocuments,
-      JSON.stringify(filtered)
-    );
+    jsonManager.deleteSavedDocument(id);
   } catch (error) {
     console.error('Failed to delete saved document:', error);
   }
@@ -81,24 +59,13 @@ export const deleteSavedDocument = (id: string): void => {
 // 履歴への追加（ダウンロード時に自動保存）
 export const addToHistory = (data: InvoiceData): void => {
   try {
-    const history = loadHistory();
     const newHistory: HistoryItem = {
       id: Date.now().toString(),
       data,
       savedAt: new Date().toISOString(),
     };
 
-    history.unshift(newHistory);
-
-    // 最大件数を超えたら古いものを削除
-    if (history.length > config.maxDocumentHistory) {
-      history.splice(config.maxDocumentHistory);
-    }
-
-    localStorage.setItem(
-      config.storageKeys.documentHistory,
-      JSON.stringify(history)
-    );
+    jsonManager.addDownloadHistory(newHistory, config.maxDocumentHistory);
   } catch (error) {
     console.error('Failed to add to history:', error);
   }
@@ -107,13 +74,7 @@ export const addToHistory = (data: InvoiceData): void => {
 // 履歴の読み込み
 export const loadHistory = (): HistoryItem[] => {
   try {
-    const data = localStorage.getItem(config.storageKeys.documentHistory);
-    const history: DocumentHistory[] = data ? JSON.parse(data) : [];
-    return history.map(item => ({
-      id: item.id,
-      data: item.data,
-      savedAt: item.createdAt
-    }));
+    return jsonManager.getDownloadHistory();
   } catch (error) {
     console.error('Failed to load history:', error);
     return [];
@@ -123,12 +84,7 @@ export const loadHistory = (): HistoryItem[] => {
 // 履歴の削除
 export const deleteHistoryItem = (id: string): void => {
   try {
-    const history = loadHistory();
-    const filtered = history.filter((item) => item.id !== id);
-    localStorage.setItem(
-      config.storageKeys.documentHistory,
-      JSON.stringify(filtered)
-    );
+    jsonManager.deleteDownloadHistory(id);
   } catch (error) {
     console.error('Failed to delete history item:', error);
   }

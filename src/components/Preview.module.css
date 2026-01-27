@@ -329,3 +329,22 @@
     width: 100%;
   }
 }
+
+.jsonDownloadButton {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #20c997;
+  border-radius: 10px;
+  background: #fff;
+  color: #20c997;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 12px;
+}
+
+.jsonDownloadButton:hover {
+  background: #20c997;
+  color: #fff;
+}

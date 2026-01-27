@@ -11,7 +11,7 @@ export const config = {
   },
 
   // 保存可能な最大件数
-  maxSavedDocuments: 10,
+  maxSavedDocuments: 30,
   maxDocumentHistory: 10,
 } as const;
 

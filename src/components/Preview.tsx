@@ -13,6 +13,7 @@ import { formatDateJapanese } from '../utils/dateUtils';
 import { getDocumentTypeName, generateFileName } from '../utils/fileUtils';
 import { exportDocument, ExportFormat } from '../utils/exportUtils';
 import { addToHistory } from '../utils/storage';
+import { downloadJSON } from '../utils/jsonManager';
 import { DOCUMENT_TYPES } from '../config';
 
 interface PreviewProps {
@@ -227,6 +228,12 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
             disabled={isExporting}
           >
             {isExporting ? 'ダウンロード中...' : 'ダウンロード'}
+          </button>
+          <button
+            className={styles.jsonDownloadButton}
+            onClick={downloadJSON}
+          >
+            JSONダウンロード
           </button>
         </div>
       </div>

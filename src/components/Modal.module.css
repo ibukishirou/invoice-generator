@@ -275,6 +275,164 @@
   background: #4c6ef5;
 }
 
+/* Upload Modal Styles */
+.uploadDescription {
+  text-align: center;
+  color: #666;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.uploadArea {
+  border: 3px dashed #ddd;
+  border-radius: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fafafa;
+  margin-bottom: 16px;
+}
+
+.uploadArea:hover {
+  border-color: #5c7cfa;
+  background: #f0f4ff;
+}
+
+.uploadArea.dragging {
+  border-color: #5c7cfa;
+  background: #e7f0ff;
+}
+
+.uploadIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.uploadText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.uploadSubtext {
+  font-size: 13px;
+  color: #999;
+  margin: 0;
+}
+
+.skipButton {
+  padding: 12px 24px;
+  border: 2px solid #5c7cfa;
+  border-radius: 10px;
+  background: #fff;
+  color: #5c7cfa;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.skipButton:hover {
+  background: #5c7cfa;
+  color: #fff;
+}
+
+/* Exit Confirm Modal Styles */
+.warningBox {
+  background: #fff3cd;
+  border: 2px solid #ffc107;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.warningText {
+  color: #856404;
+  font-size: 14px;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.warningTextBold {
+  color: #721c24;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.infoList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+.infoList li {
+  padding: 6px 0;
+  padding-left: 20px;
+  position: relative;
+}
+
+.infoList li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #5c7cfa;
+  font-weight: bold;
+}
+
+.downloadButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background: #5c7cfa;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.downloadButton:hover {
+  background: #4c6ef5;
+}
+
+.exitButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background: #20c997;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.exitButton:hover {
+  background: #12b886;
+}
+
+.warningButton {
+  padding: 12px 24px;
+  border: 2px solid #e74c3c;
+  border-radius: 10px;
+  background: #fff;
+  color: #e74c3c;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.warningButton:hover {
+  background: #e74c3c;
+  color: #fff;
+}
+
 @media (max-width: 768px) {
   .content {
     padding: 24px;
@@ -303,5 +461,13 @@
   .loadButton,
   .deleteButton {
     flex: 1;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
   }
 }

@@ -82,3 +82,11 @@ export interface HistoryItem {
   data: InvoiceData;
   savedAt: string;
 }
+
+// JSONデータ構造（アップロード/ダウンロード用）
+export interface AppDataJSON {
+  version: string;
+  companyInfo: CompanyInfo;
+  savedDocuments: SavedDocument[];
+  downloadHistory: HistoryItem[];
+}

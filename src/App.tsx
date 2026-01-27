@@ -4,9 +4,12 @@ import InputForm from './components/InputForm';
 import Preview from './components/Preview';
 import HistoryModal from './components/HistoryModal';
 import SaveModal from './components/SaveModal';
+import UploadModal from './components/UploadModal';
+import ExitConfirmModal from './components/ExitConfirmModal';
 import { InvoiceData, InvoiceItem } from './types';
 import { getCurrentDate, getNextMonthEnd, generateDocumentNumber } from './utils/dateUtils';
 import { loadCompanyInfo, saveCompanyInfo } from './utils/storage';
+import { initializeData, downloadJSON } from './utils/jsonManager';
 import { DOCUMENT_TYPES, TAX_TYPES } from './config';
 
 function App() {
@@ -56,7 +59,10 @@ function App() {
 
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(true);
+  const [isExitConfirmModalOpen, setIsExitConfirmModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   useEffect(() => {
     saveCompanyInfo(data.companyInfo);
@@ -78,6 +84,47 @@ function App() {
     setIsHistoryModalOpen(true);
     setIsMenuOpen(false);
   };
+
+  const handleUploadJSON = () => {
+    setIsUploadModalOpen(true);
+    setIsMenuOpen(false);
+  };
+
+  const handleDownloadJSON = () => {
+    downloadJSON();
+    setIsMenuOpen(false);
+  };
+
+  const handleDataLoaded = () => {
+    setIsDataLoaded(true);
+    const companyInfo = loadCompanyInfo();
+    if (companyInfo) {
+      setData((prevData) => ({
+        ...prevData,
+        companyInfo,
+      }));
+    }
+  };
+
+  const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    e.returnValue = '';
+    setIsExitConfirmModalOpen(true);
+  };
+
+  const handleConfirmExit = () => {
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+    setIsExitConfirmModalOpen(false);
+  };
+
+  useEffect(() => {
+    if (isDataLoaded) {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+    }
+  }, [isDataLoaded]);
 
   return (
     <div className={styles.container}>
@@ -102,6 +149,8 @@ function App() {
             {isMenuOpen && (
               <div className={styles.menuDropdown}>
                 <button onClick={handleLoadHistory}>履歴から読み込む</button>
+                <button onClick={handleDownloadJSON}>JSONダウンロード</button>
+                <button onClick={handleUploadJSON}>JSONアップロード</button>
               </div>
             )}
           </div>
@@ -127,6 +176,18 @@ function App() {
         isOpen={isSaveModalOpen}
         onClose={() => setIsSaveModalOpen(false)}
         data={data}
+      />
+
+      <UploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onDataLoaded={handleDataLoaded}
+      />
+
+      <ExitConfirmModal
+        isOpen={isExitConfirmModalOpen}
+        onClose={() => setIsExitConfirmModalOpen(false)}
+        onConfirmExit={handleConfirmExit}
       />
     </div>
   );
