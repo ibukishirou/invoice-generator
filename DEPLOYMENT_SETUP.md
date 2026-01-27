@@ -2,6 +2,18 @@
 
 このリポジトリをGitHub Pagesで公開するには、以下の手順を実行してください。
 
+## ⚠️ 重要: 最初にワークフローファイルを作成してください
+
+GitHub Appの権限の制限により、ワークフローファイルはGitHubのウェブインターフェースから直接作成する必要があります。
+
+### ステップ 0: ワークフローファイルの作成
+
+1. https://github.com/ibukishirou/invoice-generator にアクセス
+2. リポジトリのメインページで「**Add file**」→「**Create new file**」をクリック
+3. ファイル名に「`.github/workflows/deploy.yml`」と入力
+4. `WORKFLOW_FILE.txt` の内容（コメント行以外）をコピー＆ペースト
+5. 一番下の「**Commit new file**」をクリックしてmainブランチに直接コミット
+
 ## 📋 設定手順
 
 ### 1. GitHubリポジトリページを開く
