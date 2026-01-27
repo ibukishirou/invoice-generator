@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { InvoiceData } from '../types';
 import { saveDocument } from '../utils/storage';
 import styles from './Modal.module.css';
@@ -9,9 +9,22 @@ interface SaveModalProps {
   data: InvoiceData;
 }
 
+const generateDefaultName = (data: InvoiceData): string => {
+  const date = data.documentInfo.issueDate.replace(/-/g, '');
+  const docType = data.documentType;
+  const client = data.clientInfo.companyName || data.clientInfo.contactPerson;
+  return `${date}_${docType}_${client}`;
+};
+
 export default function SaveModal({ isOpen, onClose, data }: SaveModalProps) {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setName(generateDefaultName(data));
+    }
+  }, [isOpen, data]);
 
   const handleSave = () => {
     if (!name.trim()) {
@@ -24,7 +37,6 @@ export default function SaveModal({ isOpen, onClose, data }: SaveModalProps) {
       setName('');
       setError('');
       onClose();
-      alert('データを保存しました');
     } catch (err) {
       setError('保存に失敗しました');
     }

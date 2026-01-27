@@ -102,25 +102,6 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
         </div>
       </div>
 
-      {/* 消費税設定 */}
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>消費税設定</h2>
-        <div className={styles.taxSelector}>
-          <button
-            className={`${styles.taxButton} ${data.taxType === TAX_TYPES.INTERNAL_TAX ? styles.active : ''}`}
-            onClick={() => onChange({ ...data, taxType: TAX_TYPES.INTERNAL_TAX })}
-          >
-            内税
-          </button>
-          <button
-            className={`${styles.taxButton} ${data.taxType === TAX_TYPES.EXTERNAL_TAX ? styles.active : ''}`}
-            onClick={() => onChange({ ...data, taxType: TAX_TYPES.EXTERNAL_TAX })}
-          >
-            外税
-          </button>
-        </div>
-      </div>
-
       {/* 自社情報 */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>自社情報</h2>
@@ -283,7 +264,7 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
         <div className={styles.row}>
           <div className={styles.formGroup}>
             <label className={styles.label}>
-              請求日<span className={styles.required}>*</span>
+              発行日<span className={styles.required}>*</span>
             </label>
             <input
               type="date"
@@ -336,6 +317,33 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
       {/* 明細 */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>明細</h2>
+        
+        {/* 消費税設定（明細内に配置） */}
+        <div className={styles.taxSubsection}>
+          <h3 className={styles.subsectionTitle}>消費税設定</h3>
+          <div className={styles.taxSelector}>
+            <button
+              className={`${styles.taxButton} ${data.taxType === TAX_TYPES.INTERNAL_TAX ? styles.active : ''}`}
+              onClick={() => onChange({ ...data, taxType: TAX_TYPES.INTERNAL_TAX })}
+            >
+              内税
+            </button>
+            <button
+              className={`${styles.taxButton} ${data.taxType === TAX_TYPES.EXTERNAL_TAX ? styles.active : ''}`}
+              onClick={() => onChange({ ...data, taxType: TAX_TYPES.EXTERNAL_TAX })}
+            >
+              外税
+            </button>
+          </div>
+          <div className={styles.taxExplanation}>
+            {data.taxType === TAX_TYPES.INTERNAL_TAX ? (
+              <p>単価には<strong>税込み</strong>の金額を入力してください</p>
+            ) : (
+              <p>単価には<strong>税抜き</strong>の金額を入力してください</p>
+            )}
+          </div>
+        </div>
+        
         <div className={styles.itemsContainer}>
           {data.items.map((item, index) => (
             <div key={item.id} className={styles.itemRow}>

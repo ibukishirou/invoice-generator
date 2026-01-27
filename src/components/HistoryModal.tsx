@@ -31,10 +31,8 @@ export default function HistoryModal({ isOpen, onClose, onLoad }: HistoryModalPr
   };
 
   const handleLoad = (item: HistoryItem) => {
-    if (window.confirm('現在の入力内容を破棄して読み込みますか？')) {
-      onLoad(item.data);
-      onClose();
-    }
+    onLoad(item.data);
+    onClose();
   };
 
   const handleDelete = (id: string) => {
