@@ -75,3 +75,11 @@ export interface DocumentHistory {
   createdAt: string;
   data: InvoiceData;
 }
+
+// 履歴アイテム（モーダル表示用）
+export interface HistoryItem {
+  id: string;
+  name?: string;
+  data: InvoiceData;
+  savedAt: string;
+}

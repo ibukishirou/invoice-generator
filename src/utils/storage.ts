@@ -1,5 +1,5 @@
 import { config } from '../config';
-import { CompanyInfo, SavedDocument, DocumentHistory, InvoiceData } from '../types';
+import { CompanyInfo, SavedDocument, DocumentHistory, InvoiceData, HistoryItem } from '../types';
 
 // LocalStorage ユーティリティ
 
@@ -27,7 +27,7 @@ export const loadCompanyInfo = (): CompanyInfo | null => {
 };
 
 // 名前付き保存
-export const saveDocument = (name: string, data: InvoiceData): void => {
+export const saveDocument = (data: InvoiceData, name: string): void => {
   try {
     const saved = loadSavedDocuments();
     const newDocument: SavedDocument = {
@@ -54,7 +54,7 @@ export const saveDocument = (name: string, data: InvoiceData): void => {
 };
 
 // 保存された書類一覧の読み込み
-export const loadSavedDocuments = (): SavedDocument[] => {
+export const loadSavedDocuments = (): HistoryItem[] => {
   try {
     const data = localStorage.getItem(config.storageKeys.savedDocuments);
     return data ? JSON.parse(data) : [];
@@ -82,12 +82,10 @@ export const deleteSavedDocument = (id: string): void => {
 export const addToHistory = (data: InvoiceData): void => {
   try {
     const history = loadHistory();
-    const newHistory: DocumentHistory = {
+    const newHistory: HistoryItem = {
       id: Date.now().toString(),
-      documentType: data.documentType,
-      clientName: data.clientInfo.contactPerson,
-      createdAt: new Date().toISOString(),
       data,
+      savedAt: new Date().toISOString(),
     };
 
     history.unshift(newHistory);
@@ -107,10 +105,15 @@ export const addToHistory = (data: InvoiceData): void => {
 };
 
 // 履歴の読み込み
-export const loadHistory = (): DocumentHistory[] => {
+export const loadHistory = (): HistoryItem[] => {
   try {
     const data = localStorage.getItem(config.storageKeys.documentHistory);
-    return data ? JSON.parse(data) : [];
+    const history: DocumentHistory[] = data ? JSON.parse(data) : [];
+    return history.map(item => ({
+      id: item.id,
+      data: item.data,
+      savedAt: item.createdAt
+    }));
   } catch (error) {
     console.error('Failed to load history:', error);
     return [];
