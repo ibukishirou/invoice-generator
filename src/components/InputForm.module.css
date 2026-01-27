@@ -167,7 +167,7 @@
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 2fr auto;
   gap: 12px;
-  align-items: end;
+  align-items: start;
   margin-bottom: 12px;
   padding: 12px;
   background: #fff;
@@ -183,6 +183,8 @@
   cursor: pointer;
   font-weight: 500;
   transition: background 0.2s;
+  margin-top: 26px;
+  height: fit-content;
 }
 
 .removeButton:hover {
