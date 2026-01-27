@@ -46,7 +46,18 @@ npm run preview
 
 ## デプロイ
 
+### GitHub Actionsによる自動デプロイ
+
 mainブランチへのpush時に自動的にGitHub Pagesにデプロイされます。
+
+**初回セットアップ手順:**
+
+1. GitHubリポジトリの「Settings」タブを開く
+2. 左メニューから「Pages」を選択
+3. 「Source」を **「GitHub Actions」** に変更
+4. ワークフローファイル（`.github/workflows/deploy.yml`）がmainブランチにpushされると自動的にデプロイが開始されます
+
+デプロイURL: https://ibukishirou.github.io/invoice-generator/
 
 ## 設定
 
