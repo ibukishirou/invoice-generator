@@ -14,3 +14,17 @@ export const config = {
   maxSavedDocuments: 10,
   maxDocumentHistory: 10,
 } as const;
+
+// 書類種別の定義
+export const DOCUMENT_TYPES = {
+  INVOICE: '請求書',
+  PURCHASE_ORDER: '発注書',
+  ESTIMATE: '見積書',
+  DELIVERY: '納品書',
+} as const;
+
+// 消費税設定の定義
+export const TAX_TYPES = {
+  INTERNAL_TAX: '内税',
+  EXTERNAL_TAX: '外税',
+} as const;

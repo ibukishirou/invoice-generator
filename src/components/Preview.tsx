@@ -13,6 +13,7 @@ import { formatDateJapanese } from '../utils/dateUtils';
 import { getDocumentTypeName, generateFileName } from '../utils/fileUtils';
 import { exportDocument, ExportFormat } from '../utils/exportUtils';
 import { addToHistory } from '../utils/storage';
+import { DOCUMENT_TYPES } from '../config';
 
 interface PreviewProps {
   data: InvoiceData;
@@ -63,10 +64,11 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
   };
 
   return (
-    <div className={styles.previewContainer}>
-      <h2 className={styles.previewTitle}>プレビュー</h2>
+    <>
+      <div className={styles.previewContainer}>
+        <h2 className={styles.previewTitle}>プレビュー</h2>
 
-      <div ref={previewRef} className={styles.previewDocument}>
+        <div ref={previewRef} className={styles.previewDocument}>
         {/* ヘッダー */}
         <div className={styles.documentHeader}>
           <h1 className={styles.documentTitle}>
@@ -96,7 +98,7 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
             {data.companyInfo.address && <div>{data.companyInfo.address}</div>}
             {data.companyInfo.phone && <div>TEL: {data.companyInfo.phone}</div>}
             {data.companyInfo.email && <div>Email: {data.companyInfo.email}</div>}
-            {data.companyInfo.invoiceNumber && (
+            {data.documentType !== DOCUMENT_TYPES.PURCHASE_ORDER && data.companyInfo.invoiceNumber && (
               <div>登録番号: {data.companyInfo.invoiceNumber}</div>
             )}
             {data.companyInfo.logoImage && (
@@ -164,16 +166,18 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
         </div>
 
         {/* 振込先情報 */}
-        <div className={styles.notesSection}>
-          <div className={styles.notesTitle}>お振込先</div>
-          <div>
-            {data.companyInfo.bankName} {data.companyInfo.bankBranch}
+        {data.documentType !== DOCUMENT_TYPES.PURCHASE_ORDER && (
+          <div className={styles.notesSection}>
+            <div className={styles.notesTitle}>お振込先</div>
+            <div>
+              {data.companyInfo.bankName} {data.companyInfo.bankBranch}
+            </div>
+            <div>
+              {data.companyInfo.accountType} {data.companyInfo.accountNumber}
+            </div>
+            <div>{data.companyInfo.accountHolder}</div>
           </div>
-          <div>
-            {data.companyInfo.accountType} {data.companyInfo.accountNumber}
-          </div>
-          <div>{data.companyInfo.accountHolder}</div>
-        </div>
+        )}
 
         {/* 備考 */}
         {getNotes() && (
@@ -182,48 +186,52 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
             <div>{getNotes()}</div>
           </div>
         )}
+        </div>
       </div>
 
-      {/* エクスポート設定 */}
-      <div className={styles.exportSection}>
-        <div className={styles.exportRow}>
-          <input
-            type="text"
-            className={styles.fileNameInput}
-            placeholder="ファイル名（未入力の場合は自動生成）"
-            value={customFileName}
-            onChange={(e) => setCustomFileName(e.target.value)}
-          />
+      {/* エクスポート設定（独立した操作エリア） */}
+      <div className={styles.exportContainer}>
+        <div className={styles.exportSection}>
+          <div className={styles.exportRow}>
+            <label className={styles.fileNameLabel}>ファイル名:</label>
+            <input
+              type="text"
+              className={styles.fileNameInput}
+              placeholder="未入力の場合は自動生成"
+              value={customFileName}
+              onChange={(e) => setCustomFileName(e.target.value)}
+            />
+          </div>
+          <div className={styles.formatSelector}>
+            <button
+              className={`${styles.formatButton} ${exportFormat === 'pdf' ? styles.active : ''}`}
+              onClick={() => setExportFormat('pdf')}
+            >
+              PDF
+            </button>
+            <button
+              className={`${styles.formatButton} ${exportFormat === 'jpg' ? styles.active : ''}`}
+              onClick={() => setExportFormat('jpg')}
+            >
+              JPG
+            </button>
+            <button
+              className={`${styles.formatButton} ${exportFormat === 'png' ? styles.active : ''}`}
+              onClick={() => setExportFormat('png')}
+            >
+              PNG
+            </button>
+          </div>
+          <button
+            className={styles.downloadButton}
+            onClick={handleExport}
+            disabled={isExporting}
+          >
+            {isExporting ? 'ダウンロード中...' : 'ダウンロード'}
+          </button>
         </div>
-        <div className={styles.formatSelector}>
-          <button
-            className={`${styles.formatButton} ${exportFormat === 'pdf' ? styles.active : ''}`}
-            onClick={() => setExportFormat('pdf')}
-          >
-            PDF
-          </button>
-          <button
-            className={`${styles.formatButton} ${exportFormat === 'jpg' ? styles.active : ''}`}
-            onClick={() => setExportFormat('jpg')}
-          >
-            JPG
-          </button>
-          <button
-            className={`${styles.formatButton} ${exportFormat === 'png' ? styles.active : ''}`}
-            onClick={() => setExportFormat('png')}
-          >
-            PNG
-          </button>
-        </div>
-        <button
-          className={styles.downloadButton}
-          onClick={handleExport}
-          disabled={isExporting}
-        >
-          {isExporting ? 'ダウンロード中...' : 'ダウンロード'}
-        </button>
       </div>
-    </div>
+    </>
   );
 };
 

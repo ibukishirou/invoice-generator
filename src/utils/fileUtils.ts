@@ -1,16 +1,8 @@
 import { DocumentType } from '../types';
 
 export const getDocumentTypeName = (type: DocumentType): string => {
-  switch (type) {
-    case 'invoice':
-      return '請求書';
-    case 'estimate':
-      return '見積書';
-    case 'delivery':
-      return '納品書';
-    default:
-      return '書類';
-  }
+  // 新しい型定義では、typeは既に日本語名（'請求書', '発注書', '見積書', '納品書'）
+  return type;
 };
 
 export const generateFileName = (

@@ -1,10 +1,10 @@
 // 型定義ファイル
 
 // 書類種別
-export type DocumentType = 'invoice' | 'estimate' | 'delivery';
+export type DocumentType = '請求書' | '発注書' | '見積書' | '納品書';
 
 // 消費税設定
-export type TaxType = 'tax-included' | 'tax-excluded' | 'internal-tax' | 'external-tax';
+export type TaxType = '内税' | '外税';
 
 // 明細行
 export interface InvoiceItem {

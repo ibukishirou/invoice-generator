@@ -7,6 +7,7 @@ import SaveModal from './components/SaveModal';
 import { InvoiceData, InvoiceItem } from './types';
 import { getCurrentDate, getNextMonthEnd, generateDocumentNumber } from './utils/dateUtils';
 import { loadCompanyInfo, saveCompanyInfo } from './utils/storage';
+import { DOCUMENT_TYPES, TAX_TYPES } from './config';
 
 function App() {
   const [data, setData] = useState<InvoiceData>(() => {
@@ -22,8 +23,8 @@ function App() {
 
     return {
       id: Date.now().toString(),
-      documentType: 'invoice',
-      taxType: 'tax-excluded',
+      documentType: DOCUMENT_TYPES.INVOICE,
+      taxType: TAX_TYPES.INTERNAL_TAX,
       companyInfo: savedCompanyInfo || {
         companyName: '',
         address: '',
@@ -56,6 +57,7 @@ function App() {
 
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     saveCompanyInfo(data.companyInfo);
@@ -75,15 +77,36 @@ function App() {
 
   const handleLoadHistory = () => {
     setIsHistoryModalOpen(true);
+    setIsMenuOpen(false);
   };
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>請求書自動作成ツール</h1>
-        <p className={styles.subtitle}>
-          必要な項目を入力するだけで、請求書・見積書・納品書を簡単に作成できます
-        </p>
+        <div className={styles.headerContent}>
+          <div className={styles.headerText}>
+            <h1 className={styles.title}>請求書自動作成ツール</h1>
+            <p className={styles.subtitle}>
+              必要な項目を入力するだけで、請求書・見積書・納品書・発注書を簡単に作成できます
+            </p>
+          </div>
+          <div className={styles.hamburgerMenu}>
+            <button
+              className={styles.hamburgerButton}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="メニュー"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            {isMenuOpen && (
+              <div className={styles.menuDropdown}>
+                <button onClick={handleLoadHistory}>履歴から読み込む</button>
+              </div>
+            )}
+          </div>
+        </div>
       </header>
 
       <div className={styles.mainContent}>
@@ -91,7 +114,6 @@ function App() {
           data={data}
           onChange={handleDataChange}
           onSave={handleSave}
-          onLoadHistory={handleLoadHistory}
         />
         <Preview data={data} />
       </div>

@@ -1,4 +1,4 @@
-import { config } from '../config';
+import { config, TAX_TYPES } from '../config';
 import { InvoiceItem, TaxType } from '../types';
 
 export const calculateItemTotal = (item: InvoiceItem): number => {
@@ -14,11 +14,9 @@ export const calculateTax = (
   taxType: TaxType
 ): number => {
   switch (taxType) {
-    case 'tax-excluded':
-    case 'external-tax':
+    case TAX_TYPES.EXTERNAL_TAX:
       return Math.floor(subtotal * config.taxRate);
-    case 'tax-included':
-    case 'internal-tax':
+    case TAX_TYPES.INTERNAL_TAX:
       return Math.floor(subtotal - subtotal / (1 + config.taxRate));
     default:
       return 0;
@@ -30,11 +28,9 @@ export const calculateTotal = (
   taxType: TaxType
 ): number => {
   switch (taxType) {
-    case 'tax-excluded':
-    case 'external-tax':
+    case TAX_TYPES.EXTERNAL_TAX:
       return subtotal + calculateTax(subtotal, taxType);
-    case 'tax-included':
-    case 'internal-tax':
+    case TAX_TYPES.INTERNAL_TAX:
       return subtotal;
     default:
       return subtotal;
@@ -46,16 +42,5 @@ export const formatCurrency = (amount: number): string => {
 };
 
 export const getTaxTypeLabel = (taxType: TaxType): string => {
-  switch (taxType) {
-    case 'tax-included':
-      return '税込';
-    case 'tax-excluded':
-      return '税抜';
-    case 'internal-tax':
-      return '内税';
-    case 'external-tax':
-      return '外税';
-    default:
-      return '';
-  }
+  return taxType;
 };

@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# InputForm.tsx - 完全実装
+cat > /home/user/webapp/src/components/InputForm.tsx << 'EOF'
 import React, { useState } from 'react';
 import styles from './InputForm.module.css';
 import {
@@ -11,15 +15,15 @@ import {
 } from '../types';
 import { getCurrentDate, getNextMonthEnd, generateDocumentNumber } from '../utils/dateUtils';
 import { convertImageToBase64 } from '../utils/fileUtils';
-import { DOCUMENT_TYPES, TAX_TYPES } from '../config';
 
 interface InputFormProps {
   data: InvoiceData;
   onChange: (data: InvoiceData) => void;
   onSave: () => void;
+  onLoadHistory: () => void;
 }
 
-const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
+const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave, onLoadHistory }) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const updateCompanyInfo = (updates: Partial<CompanyInfo>) => {
@@ -105,26 +109,20 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
         <h2 className={styles.sectionTitle}>書類種別</h2>
         <div className={styles.typeSelector}>
           <button
-            className={`${styles.typeButton} ${data.documentType === DOCUMENT_TYPES.INVOICE ? styles.active : ''}`}
-            onClick={() => onChange({ ...data, documentType: DOCUMENT_TYPES.INVOICE })}
+            className={`${styles.typeButton} ${data.documentType === 'invoice' ? styles.active : ''}`}
+            onClick={() => onChange({ ...data, documentType: 'invoice' })}
           >
             請求書
           </button>
           <button
-            className={`${styles.typeButton} ${data.documentType === DOCUMENT_TYPES.PURCHASE_ORDER ? styles.active : ''}`}
-            onClick={() => onChange({ ...data, documentType: DOCUMENT_TYPES.PURCHASE_ORDER })}
-          >
-            発注書
-          </button>
-          <button
-            className={`${styles.typeButton} ${data.documentType === DOCUMENT_TYPES.ESTIMATE ? styles.active : ''}`}
-            onClick={() => onChange({ ...data, documentType: DOCUMENT_TYPES.ESTIMATE })}
+            className={`${styles.typeButton} ${data.documentType === 'estimate' ? styles.active : ''}`}
+            onClick={() => onChange({ ...data, documentType: 'estimate' })}
           >
             見積書
           </button>
           <button
-            className={`${styles.typeButton} ${data.documentType === DOCUMENT_TYPES.DELIVERY ? styles.active : ''}`}
-            onClick={() => onChange({ ...data, documentType: DOCUMENT_TYPES.DELIVERY })}
+            className={`${styles.typeButton} ${data.documentType === 'delivery' ? styles.active : ''}`}
+            onClick={() => onChange({ ...data, documentType: 'delivery' })}
           >
             納品書
           </button>
@@ -136,14 +134,26 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
         <h2 className={styles.sectionTitle}>消費税設定</h2>
         <div className={styles.taxSelector}>
           <button
-            className={`${styles.taxButton} ${data.taxType === TAX_TYPES.INTERNAL_TAX ? styles.active : ''}`}
-            onClick={() => onChange({ ...data, taxType: TAX_TYPES.INTERNAL_TAX })}
+            className={`${styles.taxButton} ${data.taxType === 'tax-excluded' ? styles.active : ''}`}
+            onClick={() => onChange({ ...data, taxType: 'tax-excluded' })}
+          >
+            税抜
+          </button>
+          <button
+            className={`${styles.taxButton} ${data.taxType === 'tax-included' ? styles.active : ''}`}
+            onClick={() => onChange({ ...data, taxType: 'tax-included' })}
+          >
+            税込
+          </button>
+          <button
+            className={`${styles.taxButton} ${data.taxType === 'internal-tax' ? styles.active : ''}`}
+            onClick={() => onChange({ ...data, taxType: 'internal-tax' })}
           >
             内税
           </button>
           <button
-            className={`${styles.taxButton} ${data.taxType === TAX_TYPES.EXTERNAL_TAX ? styles.active : ''}`}
-            onClick={() => onChange({ ...data, taxType: TAX_TYPES.EXTERNAL_TAX })}
+            className={`${styles.taxButton} ${data.taxType === 'external-tax' ? styles.active : ''}`}
+            onClick={() => onChange({ ...data, taxType: 'external-tax' })}
           >
             外税
           </button>
@@ -197,23 +207,20 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
             />
           </div>
         </div>
-        {data.documentType !== DOCUMENT_TYPES.PURCHASE_ORDER && (
-          <div className={styles.formGroup}>
-            <label className={styles.label}>インボイス登録番号</label>
-            <input
-              type="text"
-              className={styles.input}
-              value={data.companyInfo.invoiceNumber || ''}
-              onChange={(e) => updateCompanyInfo({ invoiceNumber: e.target.value })}
-              placeholder="例：T1234567890123"
-            />
-          </div>
-        )}
-        {data.documentType !== DOCUMENT_TYPES.PURCHASE_ORDER && (
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              振込先<span className={styles.required}>*</span>
-            </label>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>インボイス登録番号</label>
+          <input
+            type="text"
+            className={styles.input}
+            value={data.companyInfo.invoiceNumber || ''}
+            onChange={(e) => updateCompanyInfo({ invoiceNumber: e.target.value })}
+            placeholder="例：T1234567890123"
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>
+            振込先<span className={styles.required}>*</span>
+          </label>
           <div className={styles.row}>
             <input
               type="text"
@@ -255,8 +262,7 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
             onChange={(e) => updateCompanyInfo({ accountHolder: e.target.value })}
             placeholder="口座名義"
           />
-          </div>
-        )}
+        </div>
         <div className={styles.imageUpload}>
           <label className={styles.label}>ロゴ / 印鑑画像</label>
           <input
@@ -344,8 +350,7 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>
-              {data.documentType === DOCUMENT_TYPES.PURCHASE_ORDER ? '納品期限' : '支払期限'}
-              <span className={styles.required}>*</span>
+              支払期限<span className={styles.required}>*</span>
             </label>
             <input
               type="date"
@@ -363,19 +368,17 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
             onChange={(e) => updateDocumentInfo({ notes: e.target.value })}
             placeholder="その他の備考を入力してください"
           />
-          {data.documentType === DOCUMENT_TYPES.INVOICE && (
-            <div className={styles.checkbox}>
-              <input
-                type="checkbox"
-                id="payment-note"
-                checked={data.documentInfo.includePaymentNote}
-                onChange={(e) => updateDocumentInfo({ includePaymentNote: e.target.checked })}
-              />
-              <label htmlFor="payment-note">
-                「恐れ入りますが振込手数料はご負担いただくようお願いいたします」を追加
-              </label>
-            </div>
-          )}
+          <div className={styles.checkbox}>
+            <input
+              type="checkbox"
+              id="payment-note"
+              checked={data.documentInfo.includePaymentNote}
+              onChange={(e) => updateDocumentInfo({ includePaymentNote: e.target.checked })}
+            />
+            <label htmlFor="payment-note">
+              「恐れ入りますが振込手数料はご負担いただくようお願いいたします」を追加
+            </label>
+          </div>
         </div>
       </div>
 
@@ -441,6 +444,9 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
 
       {/* アクションボタン */}
       <div className={styles.actionButtons}>
+        <button className={styles.secondaryButton} onClick={onLoadHistory}>
+          履歴から読み込む
+        </button>
         <button className={styles.primaryButton} onClick={onSave}>
           名前を付けて保存
         </button>
@@ -450,3 +456,6 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
 };
 
 export default InputForm;
+EOF
+
+echo "InputForm.tsx created"
