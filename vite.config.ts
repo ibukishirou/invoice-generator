@@ -12,7 +12,7 @@ function disableHostCheck(): Plugin {
         // Override the host check by patching the middleware
         server.middlewares.stack.unshift({
           route: '',
-          handle: (req, _res, next) => {
+          handle: (req: any, _res: any, next: any) => {
             // Replace any host with localhost to bypass Vite's host check
             if (req.headers.host && !req.headers.host.startsWith('localhost')) {
               req.headers.host = `localhost:${server.config.server.port || 3000}`
