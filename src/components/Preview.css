@@ -1,0 +1,310 @@
+.preview-wrapper {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.preview {
+  background: white;
+  padding: 3rem;
+  min-height: 297mm;
+  width: 100%;
+  max-width: 210mm;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #2d3748;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.preview-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.document-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.preview-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.client-section {
+  margin-bottom: 1rem;
+}
+
+.client-company {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.client-address {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin-bottom: 0.25rem;
+}
+
+.client-contact {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.company-section {
+  text-align: right;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 1.5rem;
+}
+
+.company-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.company-address,
+.company-phone,
+.company-email,
+.company-invoice-number {
+  font-size: 0.85rem;
+  color: #4a5568;
+  margin-bottom: 0.25rem;
+}
+
+.company-logo {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.company-logo img {
+  max-width: 150px;
+  max-height: 80px;
+  object-fit: contain;
+}
+
+.document-info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  background: #f7fafc;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  max-width: 400px;
+}
+
+.info-row {
+  display: contents;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.info-value {
+  color: #4a5568;
+}
+
+.total-amount-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  text-align: right;
+  margin: 1rem 0;
+}
+
+.total-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.total-value {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.items-table th {
+  background: #2d3748;
+  color: white;
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.items-table td {
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.items-table tbody tr:last-child td {
+  border-bottom: 2px solid #2d3748;
+}
+
+.col-name {
+  width: 35%;
+}
+
+.col-quantity {
+  width: 10%;
+  text-align: right;
+}
+
+.col-price {
+  width: 20%;
+  text-align: right;
+}
+
+.col-total {
+  width: 20%;
+  text-align: right;
+}
+
+.col-memo {
+  width: 15%;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.summary-section {
+  margin-left: auto;
+  width: 300px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.summary-value {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.total-row {
+  background: #f7fafc;
+  font-size: 1.1rem;
+}
+
+.bank-section {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.bank-section h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.bank-info div {
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+}
+
+.remarks-section {
+  background: #fffaf0;
+  border: 1px solid #f6e05e;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.remarks-section h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.remarks-text {
+  white-space: pre-wrap;
+  color: #4a5568;
+  line-height: 1.8;
+}
+
+@media print {
+  .preview-wrapper {
+    padding: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .preview {
+    max-width: none;
+    box-shadow: none;
+    padding: 1cm;
+    margin: 0;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .preview {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  .document-title {
+    font-size: 1.5rem;
+  }
+
+  .total-value {
+    font-size: 1.5rem;
+  }
+
+  .items-table {
+    font-size: 0.8rem;
+  }
+
+  .items-table th,
+  .items-table td {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .summary-section {
+    width: 100%;
+  }
+}
