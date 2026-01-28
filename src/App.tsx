@@ -5,7 +5,7 @@ import Preview from './components/Preview';
 import HistoryModal from './components/HistoryModal';
 import SaveModal from './components/SaveModal';
 import UploadModal from './components/UploadModal';
-import ExitConfirmModal from './components/ExitConfirmModal';
+import DataSavePromptModal from './components/DataSavePromptModal';
 import { InvoiceData, InvoiceItem } from './types';
 import { getCurrentDate, getNextMonthEnd, generateDocumentNumber } from './utils/dateUtils';
 import { loadCompanyInfo, saveCompanyInfo } from './utils/storage';
@@ -60,13 +60,29 @@ function App() {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(true);
-  const [isExitConfirmModalOpen, setIsExitConfirmModalOpen] = useState(false);
+  const [isDataSavePromptOpen, setIsDataSavePromptOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   useEffect(() => {
     saveCompanyInfo(data.companyInfo);
   }, [data.companyInfo]);
+
+  // ページ離脱時の警告
+  const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    e.returnValue = '';
+    setIsDataSavePromptOpen(true);
+  };
+
+  useEffect(() => {
+    if (isDataLoaded) {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+    }
+  }, [isDataLoaded]);
 
   const handleDataChange = (newData: InvoiceData) => {
     setData(newData);
@@ -105,26 +121,6 @@ function App() {
       }));
     }
   };
-
-  const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-    e.preventDefault();
-    e.returnValue = '';
-    setIsExitConfirmModalOpen(true);
-  };
-
-  const handleConfirmExit = () => {
-    window.removeEventListener('beforeunload', handleBeforeUnload);
-    setIsExitConfirmModalOpen(false);
-  };
-
-  useEffect(() => {
-    if (isDataLoaded) {
-      window.addEventListener('beforeunload', handleBeforeUnload);
-      return () => {
-        window.removeEventListener('beforeunload', handleBeforeUnload);
-      };
-    }
-  }, [isDataLoaded]);
 
   return (
     <div className={styles.container}>
@@ -184,10 +180,10 @@ function App() {
         onDataLoaded={handleDataLoaded}
       />
 
-      <ExitConfirmModal
-        isOpen={isExitConfirmModalOpen}
-        onClose={() => setIsExitConfirmModalOpen(false)}
-        onConfirmExit={handleConfirmExit}
+      <DataSavePromptModal
+        isOpen={isDataSavePromptOpen}
+        onClose={() => setIsDataSavePromptOpen(false)}
+        data={data}
       />
     </div>
   );
