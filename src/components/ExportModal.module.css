@@ -164,17 +164,14 @@
   background: #45a049;
 }
 
-.divider {
-  height: 1px;
-  background: #e0e0e0;
-  margin: 8px 0;
-}
+
 
 .warning {
-  background: #fff9e6;
-  border: 2px solid #ffd700;
+  background: #ffebee;
+  border: 2px solid #f44336;
   border-radius: 8px;
   padding: 16px;
+  margin-top: 16px;
 }
 
 .warning p {

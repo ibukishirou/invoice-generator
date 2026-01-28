@@ -113,27 +113,24 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data }) => {
             >
               {isExporting ? 'ダウンロード中...' : 'ダウンロード'}
             </button>
-          </div>
-
-          <div className={styles.divider}></div>
-
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>JSONダウンロード</h3>
-            <div className={styles.warning}>
-              <p>ツールの使用を終了する場合は、データ保存のためJSONをダウンロードしてください。</p>
-              <p className={styles.bold}>機微情報が含まれています。絶対に第三者にファイルを渡さないでください。</p>
-            </div>
-            <div className={styles.infoBox}>
-              <p className={styles.infoTitle}>▼JSONの内容</p>
-              <ul className={styles.infoList}>
-                <li>自社情報（会社名、住所、銀行口座情報など）</li>
-                <li>保存データ（最大30件）</li>
-                <li>ダウンロード履歴（最大10件）</li>
-              </ul>
-            </div>
+            
             <button className={styles.jsonButton} onClick={handleDownloadJSON}>
               JSONダウンロード
             </button>
+            
+            <div className={styles.warning}>
+              <p>ツールの使用を終了する場合は、データ保存のためJSONをダウンロードしてください。</p>
+              <p className={styles.bold}>機微情報が含まれています。絶対に第三者にファイルを渡さないでください。</p>
+              
+              <div className={styles.infoBox}>
+                <p className={styles.infoTitle}>▼JSONの内容</p>
+                <ul className={styles.infoList}>
+                  <li>自社情報（会社名、住所、銀行口座情報など）</li>
+                  <li>保存データ（最大30件）</li>
+                  <li>ダウンロード履歴（最大10件）</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
 

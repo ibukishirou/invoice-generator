@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import styles from './Preview.module.css';
 import { InvoiceData } from '../types';
 import {
@@ -15,38 +15,15 @@ import { DOCUMENT_TYPES } from '../config';
 
 interface PreviewProps {
   data: InvoiceData;
+  onExportClick: () => void;
 }
 
-const Preview: React.FC<PreviewProps> = ({ data }) => {
+const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
   const previewRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
 
   const subtotal = calculateSubtotal(data.items);
   const tax = calculateTax(subtotal, data.taxType);
   const total = calculateTotal(subtotal, data.taxType);
-
-  // プレビューのスケール計算
-  useEffect(() => {
-    const calculateScale = () => {
-      if (!containerRef.current) return;
-      
-      const containerWidth = containerRef.current.clientWidth - 32; // padding考慮
-      const containerHeight = containerRef.current.clientHeight - 60; // タイトル分考慮
-      const documentWidth = 794;
-      const documentHeight = 1123;
-      
-      const scaleX = containerWidth / documentWidth;
-      const scaleY = containerHeight / documentHeight;
-      const newScale = Math.min(scaleX, scaleY, 1); // 最大100%
-      
-      setScale(newScale);
-    };
-
-    calculateScale();
-    window.addEventListener('resize', calculateScale);
-    return () => window.removeEventListener('resize', calculateScale);
-  }, []);
 
   const getNotes = () => {
     let notes = data.documentInfo.notes || '';
@@ -59,14 +36,10 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
 
   return (
     <div className={styles.previewWrapper}>
-      <div ref={containerRef} className={styles.previewContainer}>
+      <div className={styles.previewContainer}>
         <h2 className={styles.previewTitle}>プレビュー</h2>
-
-        <div 
-          ref={previewRef} 
-          className={styles.previewDocument}
-          style={{ transform: `scale(${scale})` }}
-        >
+        <div className={styles.previewScrollArea}>
+          <div ref={previewRef} className={styles.previewDocument}>
         {/* ヘッダー */}
         <div className={styles.documentHeader}>
           <h1 className={styles.documentTitle}>
@@ -185,8 +158,17 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
             <div>{getNotes()}</div>
           </div>
         )}
+          </div>
         </div>
       </div>
+      
+      {/* 出力ボタン */}
+      <button 
+        className={styles.floatingExportButton}
+        onClick={onExportClick}
+      >
+        出力
+      </button>
     </div>
   );
 };

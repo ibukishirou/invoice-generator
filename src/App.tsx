@@ -6,7 +6,6 @@ import HistoryModal from './components/HistoryModal';
 import SaveModal from './components/SaveModal';
 import UploadModal from './components/UploadModal';
 import ExportModal from './components/ExportModal';
-import FloatingExportButton from './components/FloatingExportButton';
 import { InvoiceData, InvoiceItem } from './types';
 import { getCurrentDate, getNextMonthEnd, generateDocumentNumber } from './utils/dateUtils';
 import { loadCompanyInfo, saveCompanyInfo } from './utils/storage';
@@ -146,7 +145,7 @@ function App() {
           onChange={handleDataChange}
           onSave={handleSave}
         />
-        <Preview data={data} />
+        <Preview data={data} onExportClick={() => setIsExportModalOpen(true)} />
       </div>
 
       <HistoryModal
@@ -172,8 +171,6 @@ function App() {
         onClose={() => setIsExportModalOpen(false)}
         data={data}
       />
-
-      <FloatingExportButton onClick={() => setIsExportModalOpen(true)} />
     </div>
   );
 }
