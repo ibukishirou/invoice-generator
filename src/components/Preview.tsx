@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styles from './Preview.module.css';
 import { InvoiceData } from '../types';
 import {
@@ -10,10 +10,7 @@ import {
   getTaxTypeLabel,
 } from '../utils/calculator';
 import { formatDateJapanese } from '../utils/dateUtils';
-import { getDocumentTypeName, generateFileName } from '../utils/fileUtils';
-import { exportDocument, ExportFormat } from '../utils/exportUtils';
-import { addToHistory } from '../utils/storage';
-import { downloadJSON } from '../utils/jsonManager';
+import { getDocumentTypeName } from '../utils/fileUtils';
 import { DOCUMENT_TYPES } from '../config';
 
 interface PreviewProps {
@@ -22,35 +19,34 @@ interface PreviewProps {
 
 const Preview: React.FC<PreviewProps> = ({ data }) => {
   const previewRef = useRef<HTMLDivElement>(null);
-  const [exportFormat, setExportFormat] = useState<ExportFormat>('pdf');
-  const [customFileName, setCustomFileName] = useState('');
-  const [isExporting, setIsExporting] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
 
   const subtotal = calculateSubtotal(data.items);
   const tax = calculateTax(subtotal, data.taxType);
   const total = calculateTotal(subtotal, data.taxType);
 
-  const handleExport = async () => {
-    if (!previewRef.current) return;
+  // プレビューのスケール計算
+  useEffect(() => {
+    const calculateScale = () => {
+      if (!containerRef.current) return;
+      
+      const containerWidth = containerRef.current.clientWidth - 32; // padding考慮
+      const containerHeight = containerRef.current.clientHeight - 60; // タイトル分考慮
+      const documentWidth = 794;
+      const documentHeight = 1123;
+      
+      const scaleX = containerWidth / documentWidth;
+      const scaleY = containerHeight / documentHeight;
+      const newScale = Math.min(scaleX, scaleY, 1); // 最大100%
+      
+      setScale(newScale);
+    };
 
-    setIsExporting(true);
-    try {
-      const fileName = generateFileName(
-        data.documentType,
-        data.clientInfo.contactPerson,
-        customFileName
-      );
-
-      await exportDocument(previewRef.current, fileName, exportFormat);
-
-      // 履歴に追加
-      addToHistory(data);
-    } catch (error) {
-      console.error('Export failed:', error);
-    } finally {
-      setIsExporting(false);
-    }
-  };
+    calculateScale();
+    window.addEventListener('resize', calculateScale);
+    return () => window.removeEventListener('resize', calculateScale);
+  }, []);
 
   const getNotes = () => {
     let notes = data.documentInfo.notes || '';
@@ -63,10 +59,14 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
 
   return (
     <div className={styles.previewWrapper}>
-      <div className={styles.previewContainer}>
+      <div ref={containerRef} className={styles.previewContainer}>
         <h2 className={styles.previewTitle}>プレビュー</h2>
 
-        <div ref={previewRef} className={styles.previewDocument}>
+        <div 
+          ref={previewRef} 
+          className={styles.previewDocument}
+          style={{ transform: `scale(${scale})` }}
+        >
         {/* ヘッダー */}
         <div className={styles.documentHeader}>
           <h1 className={styles.documentTitle}>
@@ -185,56 +185,6 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
             <div>{getNotes()}</div>
           </div>
         )}
-        </div>
-      </div>
-
-      {/* エクスポート設定（プレビュー下部） */}
-      <div className={styles.exportContainer}>
-        <h3 className={styles.exportTitle}>出力</h3>
-        <div className={styles.exportSection}>
-          <div className={styles.exportRow}>
-            <label className={styles.fileNameLabel}>ファイル名:</label>
-            <input
-              type="text"
-              className={styles.fileNameInput}
-              placeholder="未入力の場合は自動生成"
-              value={customFileName}
-              onChange={(e) => setCustomFileName(e.target.value)}
-            />
-          </div>
-          <div className={styles.formatSelector}>
-            <button
-              className={`${styles.formatButton} ${exportFormat === 'pdf' ? styles.active : ''}`}
-              onClick={() => setExportFormat('pdf')}
-            >
-              PDF
-            </button>
-            <button
-              className={`${styles.formatButton} ${exportFormat === 'jpg' ? styles.active : ''}`}
-              onClick={() => setExportFormat('jpg')}
-            >
-              JPG
-            </button>
-            <button
-              className={`${styles.formatButton} ${exportFormat === 'png' ? styles.active : ''}`}
-              onClick={() => setExportFormat('png')}
-            >
-              PNG
-            </button>
-          </div>
-          <button
-            className={styles.downloadButton}
-            onClick={handleExport}
-            disabled={isExporting}
-          >
-            {isExporting ? 'ダウンロード中...' : 'ダウンロード'}
-          </button>
-          <button
-            className={styles.jsonDownloadButton}
-            onClick={downloadJSON}
-          >
-            JSONダウンロード
-          </button>
         </div>
       </div>
     </div>

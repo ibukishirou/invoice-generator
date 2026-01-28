@@ -1,7 +1,7 @@
 .previewWrapper {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  height: calc(100vh - 140px);
   position: sticky;
   top: 20px;
   align-self: flex-start;
@@ -10,28 +10,43 @@
 .previewContainer {
   background: #ffffff;
   border-radius: 16px;
-  padding: 24px;
+  padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .previewTitle {
   font-size: 18px;
   font-weight: 600;
   color: #333;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 2px solid #e0e0e0;
+  flex-shrink: 0;
 }
 
 .previewDocument {
   background: #fff;
-  width: 100%;
-  max-width: 794px;
+  width: 794px;
+  height: 1123px;
   margin: 0 auto;
   padding: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  min-height: 1123px;
   box-sizing: border-box;
+  transform-origin: top center;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.previewContainer > div:last-child {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1;
+  overflow: hidden;
 }
 
 .documentHeader {

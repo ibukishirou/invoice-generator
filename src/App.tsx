@@ -5,7 +5,8 @@ import Preview from './components/Preview';
 import HistoryModal from './components/HistoryModal';
 import SaveModal from './components/SaveModal';
 import UploadModal from './components/UploadModal';
-import DataSavePromptModal from './components/DataSavePromptModal';
+import ExportModal from './components/ExportModal';
+import FloatingExportButton from './components/FloatingExportButton';
 import { InvoiceData, InvoiceItem } from './types';
 import { getCurrentDate, getNextMonthEnd, generateDocumentNumber } from './utils/dateUtils';
 import { loadCompanyInfo, saveCompanyInfo } from './utils/storage';
@@ -60,7 +61,7 @@ function App() {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(true);
-  const [isDataSavePromptOpen, setIsDataSavePromptOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
@@ -68,21 +69,7 @@ function App() {
     saveCompanyInfo(data.companyInfo);
   }, [data.companyInfo]);
 
-  // ページ離脱時の警告
-  const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-    e.preventDefault();
-    e.returnValue = '';
-    setIsDataSavePromptOpen(true);
-  };
-
-  useEffect(() => {
-    if (isDataLoaded) {
-      window.addEventListener('beforeunload', handleBeforeUnload);
-      return () => {
-        window.removeEventListener('beforeunload', handleBeforeUnload);
-      };
-    }
-  }, [isDataLoaded]);
+  // beforeunloadは削除（ブラウザアラート不要）
 
   const handleDataChange = (newData: InvoiceData) => {
     setData(newData);
@@ -145,8 +132,8 @@ function App() {
             {isMenuOpen && (
               <div className={styles.menuDropdown}>
                 <button onClick={handleLoadHistory}>履歴から読み込む</button>
-                <button onClick={handleDownloadJSON}>JSONダウンロード</button>
                 <button onClick={handleUploadJSON}>JSONアップロード</button>
+                <button onClick={handleDownloadJSON}>JSONダウンロード</button>
               </div>
             )}
           </div>
@@ -180,11 +167,13 @@ function App() {
         onDataLoaded={handleDataLoaded}
       />
 
-      <DataSavePromptModal
-        isOpen={isDataSavePromptOpen}
-        onClose={() => setIsDataSavePromptOpen(false)}
+      <ExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
         data={data}
       />
+
+      <FloatingExportButton onClick={() => setIsExportModalOpen(true)} />
     </div>
   );
 }
