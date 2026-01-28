@@ -195,6 +195,7 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
             <div>{getNotes()}</div>
           </div>
         )}
+          </div>
             </div>
           </div>
         </div>
