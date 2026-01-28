@@ -324,6 +324,12 @@
   background: #e0ebff;
 }
 
+@media (max-width: 1200px) {
+  .formContainer {
+    position: static;
+  }
+}
+
 @media (max-width: 768px) {
   .formContainer {
     padding: 16px;

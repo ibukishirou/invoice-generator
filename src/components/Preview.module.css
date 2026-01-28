@@ -309,6 +309,12 @@
   }
 }
 
+@media (max-width: 1200px) {
+  .previewWrapper {
+    position: static;
+  }
+}
+
 @media (max-width: 768px) {
   .previewDocument {
     padding: 20px;
