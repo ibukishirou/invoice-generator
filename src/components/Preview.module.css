@@ -29,11 +29,10 @@
 .previewDocument {
   background: #fff;
   width: 794px;
-  height: 1123px;
+  min-height: 1123px;
   padding: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  transform-origin: top center;
   margin: 0 auto;
 }
 
@@ -202,8 +201,14 @@
 
 @media (max-width: 768px) {
   .previewDocument {
+    width: 100%;
+    max-width: 100%;
     padding: 20px;
     min-height: auto;
+  }
+
+  .previewScrollArea {
+    padding: 5px 0;
   }
 
   .documentBody {
