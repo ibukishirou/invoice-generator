@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { InvoiceData } from '../types';
 import { saveDocument } from '../utils/storage';
-import styles from './Modal.module.css';
+import styles from './ExportModal.module.css';
 
 interface SaveModalProps {
   isOpen: boolean;
   onClose: () => void;
   data: InvoiceData;
+  onDownloadJSON: () => void;
 }
 
 const generateDefaultName = (data: InvoiceData): string => {
@@ -16,9 +17,8 @@ const generateDefaultName = (data: InvoiceData): string => {
   return `${date}_${docType}_${client}`;
 };
 
-export default function SaveModal({ isOpen, onClose, data }: SaveModalProps) {
+export default function SaveModal({ isOpen, onClose, data, onDownloadJSON }: SaveModalProps) {
   const [name, setName] = useState('');
-  const [error, setError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
@@ -27,72 +27,57 @@ export default function SaveModal({ isOpen, onClose, data }: SaveModalProps) {
   }, [isOpen, data]);
 
   const handleSave = () => {
-    if (!name.trim()) {
-      setError('保存名を入力してください');
-      return;
-    }
-
-    try {
-      saveDocument(data, name.trim());
-      setName('');
-      setError('');
-      onClose();
-    } catch (err) {
-      setError('保存に失敗しました');
-    }
-  };
-
-  const handleClose = () => {
-    setName('');
-    setError('');
+    const saveName = name.trim() || generateDefaultName(data);
+    saveDocument(data, saveName);
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className={styles.overlay} onClick={handleClose}>
-      <div className={styles.content} onClick={(e) => e.stopPropagation()}>
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>データ保存</h2>
-          <button className={styles.closeButton} onClick={handleClose} aria-label="閉じる">
+          <h2 className={styles.title}>保存</h2>
+          <button className={styles.closeButton} onClick={onClose}>
             ×
           </button>
         </div>
 
-        <div className={styles.body}>
-          <div className={styles.inputGroup}>
-            <label htmlFor="save-name" className={styles.label}>
-              保存名 <span className={styles.required}>必須</span>
-            </label>
-            <input
-              id="save-name"
-              type="text"
-              className={styles.input}
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                setError('');
-              }}
-              placeholder="例: 2026年1月 ABC株式会社"
-              autoFocus
-            />
-            {error && <div className={styles.error}>{error}</div>}
-          </div>
-
-          <div className={styles.info}>
-            <p>現在の入力内容を保存します。</p>
-            <p>保存されたデータは「データ読み込み」から呼び出せます。</p>
-            <p>最大10件まで保存できます。</p>
-          </div>
-
-          <div className={styles.actions}>
-            <button className={styles.cancelButton} onClick={handleClose}>
-              キャンセル
-            </button>
+        <div className={styles.content}>
+          <div className={styles.section}>
+            <div className={styles.fileNameRow}>
+              <label className={styles.label}>ファイル名:</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="未入力の場合は自動生成"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            
             <button className={styles.saveButton} onClick={handleSave}>
-              保存する
+              名前を付けて保存
             </button>
+            
+            <button className={styles.jsonButton} onClick={onDownloadJSON}>
+              JSONダウンロード
+            </button>
+            
+            <div className={styles.warning}>
+              <p>ツールの使用を終了する場合は、データ保存のためJSONをダウンロードしてください。</p>
+              <p className={styles.bold}>機微情報が含まれています。絶対に第三者にファイルを渡さないでください。</p>
+              
+              <div className={styles.infoBox}>
+                <p className={styles.infoTitle}>▼JSONの内容</p>
+                <ul className={styles.infoList}>
+                  <li>自社情報（会社名、住所、銀行口座情報など）</li>
+                  <li>保存データ（最大30件）</li>
+                  <li>ダウンロード履歴（最大10件）</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
