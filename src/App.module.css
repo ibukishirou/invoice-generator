@@ -103,7 +103,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   max-width: 1800px;
-  margin: 0 auto 24px auto;
+  margin: 0 auto;
   align-items: start;
 }
 
