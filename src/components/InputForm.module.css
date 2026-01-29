@@ -168,7 +168,7 @@
 
 .itemRow {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 2fr auto;
+  grid-template-columns: 3fr 1fr 1fr auto;
   gap: 12px;
   align-items: start;
   margin-bottom: 12px;
@@ -178,7 +178,7 @@
 }
 
 .removeButton {
-  padding: 10px;
+  padding: 10px 16px;
   background: #fee;
   border: none;
   border-radius: 8px;
@@ -188,6 +188,7 @@
   transition: background 0.2s;
   margin-top: 26px;
   height: fit-content;
+  white-space: nowrap;
 }
 
 .removeButton:hover {
