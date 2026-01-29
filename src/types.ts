@@ -41,6 +41,7 @@ export interface DocumentInfo {
   documentNumber: string;
   issueDate: string;
   paymentDueDate: string;
+  subject?: string;
   notes?: string;
   includePaymentNote: boolean;
 }

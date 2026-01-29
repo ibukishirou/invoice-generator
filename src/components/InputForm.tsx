@@ -261,6 +261,16 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
             placeholder="例：1"
           />
         </div>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>件名</label>
+          <input
+            type="text"
+            className={styles.input}
+            value={data.documentInfo.subject || ''}
+            onChange={(e) => updateDocumentInfo({ subject: e.target.value })}
+            placeholder="例：1月分請求書"
+          />
+        </div>
         <div className={styles.row}>
           <div className={styles.formGroup}>
             <label className={styles.label}>

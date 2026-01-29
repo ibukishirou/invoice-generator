@@ -93,9 +93,16 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
 
         {/* 発行日 */}
         <div className={styles.issueDate}>
-          <span className={styles.dateLabel}>発行日:</span>
-          <span>{formatDateJapanese(data.documentInfo.issueDate)}</span>
+          発行日: {formatDateJapanese(data.documentInfo.issueDate)}
         </div>
+
+        {/* 件名 */}
+        {data.documentInfo.subject && (
+          <div className={styles.subjectSection}>
+            <div className={styles.subjectLabel}>件名</div>
+            <div className={styles.subjectContent}>{data.documentInfo.subject}</div>
+          </div>
+        )}
 
         {/* 取引先・自社情報 */}
         <div className={styles.documentBody}>
@@ -106,31 +113,68 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
               {data.documentType === DOCUMENT_TYPES.ESTIMATE && '見積先'}
               {data.documentType === DOCUMENT_TYPES.DELIVERY && '納品先'}
             </div>
-            {data.clientInfo.companyName && <div>{data.clientInfo.companyName}</div>}
-            {data.clientInfo.address && <div>{data.clientInfo.address}</div>}
-            <div>{data.clientInfo.contactPerson}</div>
-            {/* 支払期限・有効期限 */}
-            {data.documentType !== DOCUMENT_TYPES.DELIVERY && data.documentInfo.paymentDueDate && (
-              <div className={styles.dueDateInClient}>
-                <span className={styles.dateLabel}>
-                  {data.documentType === DOCUMENT_TYPES.INVOICE ? '支払期限:' : '有効期限:'}
-                </span>
-                <span>{formatDateJapanese(data.documentInfo.paymentDueDate)}</span>
-              </div>
-            )}
+            <div className={styles.sectionContent}>
+              {data.clientInfo.companyName && <div>{data.clientInfo.companyName}</div>}
+              {data.clientInfo.address && <div>{data.clientInfo.address}</div>}
+              <div>{data.clientInfo.contactPerson}</div>
+            </div>
           </div>
 
           <div className={styles.companySection}>
             <div className={styles.sectionTitle}>発行者</div>
-            <div>{data.companyInfo.companyName}</div>
-            {data.companyInfo.address && <div>{data.companyInfo.address}</div>}
-            {data.companyInfo.phone && <div>TEL: {data.companyInfo.phone}</div>}
-            {data.companyInfo.email && <div>Email: {data.companyInfo.email}</div>}
-            {data.documentType !== DOCUMENT_TYPES.PURCHASE_ORDER && data.companyInfo.invoiceNumber && (
-              <div>登録番号: {data.companyInfo.invoiceNumber}</div>
-            )}
+            <div className={styles.sectionContent}>
+              <div>{data.companyInfo.companyName}</div>
+              {data.companyInfo.address && <div>{data.companyInfo.address}</div>}
+              {data.companyInfo.phone && <div>TEL: {data.companyInfo.phone}</div>}
+              {data.companyInfo.email && <div>Email: {data.companyInfo.email}</div>}
+              {data.documentType !== DOCUMENT_TYPES.PURCHASE_ORDER && data.companyInfo.invoiceNumber && (
+                <div>登録番号: {data.companyInfo.invoiceNumber}</div>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* お振込先（件名/支払期限/振込先の3行表） */}
+        {data.documentType === DOCUMENT_TYPES.INVOICE && (
+          <div className={styles.bankInfoTable}>
+            {data.documentInfo.subject && (
+              <div className={styles.bankInfoRow}>
+                <div className={styles.bankInfoLabel}>件名</div>
+                <div className={styles.bankInfoValue}>{data.documentInfo.subject}</div>
+              </div>
+            )}
+            {data.documentInfo.paymentDueDate && (
+              <div className={styles.bankInfoRow}>
+                <div className={styles.bankInfoLabel}>支払期限</div>
+                <div className={styles.bankInfoValue}>{formatDateJapanese(data.documentInfo.paymentDueDate)}</div>
+              </div>
+            )}
+            <div className={styles.bankInfoRow}>
+              <div className={styles.bankInfoLabel}>振込先</div>
+              <div className={styles.bankInfoValue}>
+                <div>{data.companyInfo.bankName} {data.companyInfo.bankBranch}</div>
+                <div>{data.companyInfo.accountType} {data.companyInfo.accountNumber}</div>
+                <div>{data.companyInfo.accountHolder}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 合計金額 */}
+        <div className={styles.grandTotalSection}>
+          <div className={styles.grandTotalLabel}>合計</div>
+          <div className={styles.grandTotalValue}>{formatCurrency(total)} 円 (内税)</div>
+        </div>
+
+        {/* 支払期限（請求書以外） */}
+        {data.documentType !== DOCUMENT_TYPES.INVOICE && data.documentType !== DOCUMENT_TYPES.DELIVERY && data.documentInfo.paymentDueDate && (
+          <div className={styles.dueDateSection}>
+            <div className={styles.dueDateLabel}>
+              {data.documentType === DOCUMENT_TYPES.ESTIMATE ? '有効期限' : '支払期限'}
+            </div>
+            <div className={styles.dueDateValue}>{formatDateJapanese(data.documentInfo.paymentDueDate)}</div>
+          </div>
+        )}
 
         {/* 明細テーブル */}
         <table className={styles.itemsTable}>
@@ -155,44 +199,25 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
                 <td>{item.note || '-'}</td>
               </tr>
             ))}
+            {/* テーブル内に小計・消費税を追加 */}
+            <tr className={styles.subtotalRow}>
+              <td colSpan={3} className={styles.textRight}>小計 ({getTaxTypeLabel(data.taxType)})</td>
+              <td className={styles.textRight}>{formatCurrency(subtotal)}</td>
+              <td></td>
+            </tr>
+            <tr className={styles.taxRow}>
+              <td colSpan={3} className={styles.textRight}>消費税 (10%)</td>
+              <td className={styles.textRight}>{formatCurrency(tax)}</td>
+              <td></td>
+            </tr>
           </tbody>
         </table>
 
-        {/* 合計セクション */}
-        <div className={styles.totalSection}>
-          <div className={styles.totalRow}>
-            <span>小計 ({getTaxTypeLabel(data.taxType)})</span>
-            <span>{formatCurrency(subtotal)}</span>
-          </div>
-          <div className={styles.totalRow}>
-            <span>消費税 (10%)</span>
-            <span>{formatCurrency(tax)}</span>
-          </div>
-          <div className={`${styles.totalRow} ${styles.highlight}`}>
-            <span>合計金額</span>
-            <span>{formatCurrency(total)}</span>
-          </div>
-        </div>
-
-        {/* 振込先情報 */}
-        {data.documentType === DOCUMENT_TYPES.INVOICE && (
-          <div className={styles.notesSection}>
-            <div className={styles.notesTitle}>お振込先</div>
-            <div>
-              {data.companyInfo.bankName} {data.companyInfo.bankBranch}
-            </div>
-            <div>
-              {data.companyInfo.accountType} {data.companyInfo.accountNumber}
-            </div>
-            <div>{data.companyInfo.accountHolder}</div>
-          </div>
-        )}
-
         {/* 備考 */}
         {getNotes() && (
-          <div className={styles.notesSection}>
-            <div className={styles.notesTitle}>備考</div>
-            <div>{getNotes()}</div>
+          <div className={styles.remarksSection}>
+            <div className={styles.remarksTitle}>備考</div>
+            <div className={styles.remarksContent}>{getNotes()}</div>
           </div>
         )}
             </div>
