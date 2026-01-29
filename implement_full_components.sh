@@ -448,7 +448,7 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave, onLoadHis
           履歴から読み込む
         </button>
         <button className={styles.primaryButton} onClick={onSave}>
-          名前を付けて保存
+          この入力データに名前を付けて保存
         </button>
       </div>
     </div>

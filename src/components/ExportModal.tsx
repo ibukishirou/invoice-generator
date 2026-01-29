@@ -133,7 +133,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data, onSave
             </button>
             
             <button className={styles.saveButton} onClick={onSave}>
-              名前を付けて保存
+              この入力データに名前を付けて保存
             </button>
             
             <button className={styles.jsonButton} onClick={handleDownloadJSON}>

@@ -58,7 +58,7 @@ export default function SaveModal({ isOpen, onClose, data, onDownloadJSON }: Sav
             </div>
             
             <button className={styles.saveButton} onClick={handleSave}>
-              名前を付けて保存
+              この入力データに名前を付けて保存
             </button>
             
             <button className={styles.jsonButton} onClick={onDownloadJSON}>
