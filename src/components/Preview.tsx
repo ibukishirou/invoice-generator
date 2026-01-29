@@ -84,25 +84,25 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
           </h1>
         </div>
 
-        {/* 書類番号 */}
-        {data.documentInfo.documentNumber && (
-          <div className={styles.documentNumber}>
-            No. {data.documentInfo.documentNumber}
+        {/* 書類番号・発行日・件名を横並びに */}
+        <div className={styles.metaRow}>
+          <div className={styles.metaLeft}>
+            {data.documentInfo.documentNumber && (
+              <div className={styles.documentNumber}>
+                No. {data.documentInfo.documentNumber}
+              </div>
+            )}
+            <div className={styles.issueDate}>
+              発行日: {formatDateJapanese(data.documentInfo.issueDate)}
+            </div>
           </div>
-        )}
-
-        {/* 発行日 */}
-        <div className={styles.issueDate}>
-          発行日: {formatDateJapanese(data.documentInfo.issueDate)}
+          {data.documentInfo.subject && (
+            <div className={styles.subjectSection}>
+              <div className={styles.subjectLabel}>件名</div>
+              <div className={styles.subjectContent}>{data.documentInfo.subject}</div>
+            </div>
+          )}
         </div>
-
-        {/* 件名 */}
-        {data.documentInfo.subject && (
-          <div className={styles.subjectSection}>
-            <div className={styles.subjectLabel}>件名</div>
-            <div className={styles.subjectContent}>{data.documentInfo.subject}</div>
-          </div>
-        )}
 
         {/* 取引先・自社情報 */}
         <div className={styles.documentBody}>
@@ -134,15 +134,9 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
           </div>
         </div>
 
-        {/* お振込先（件名/支払期限/振込先の3行表） */}
+        {/* お振込先（支払期限/振込先/合計の統合テーブル） */}
         {data.documentType === DOCUMENT_TYPES.INVOICE && (
           <div className={styles.bankInfoTable}>
-            {data.documentInfo.subject && (
-              <div className={styles.bankInfoRow}>
-                <div className={styles.bankInfoLabel}>件名</div>
-                <div className={styles.bankInfoValue}>{data.documentInfo.subject}</div>
-              </div>
-            )}
             {data.documentInfo.paymentDueDate && (
               <div className={styles.bankInfoRow}>
                 <div className={styles.bankInfoLabel}>支払期限</div>
@@ -157,14 +151,12 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
                 <div>{data.companyInfo.accountHolder}</div>
               </div>
             </div>
+            <div className={styles.bankInfoRow}>
+              <div className={styles.bankInfoLabel}>合計</div>
+              <div className={styles.bankInfoValue}>{formatCurrency(total)} 円 (内税)</div>
+            </div>
           </div>
         )}
-
-        {/* 合計金額 */}
-        <div className={styles.grandTotalSection}>
-          <div className={styles.grandTotalLabel}>合計</div>
-          <div className={styles.grandTotalValue}>{formatCurrency(total)} 円 (内税)</div>
-        </div>
 
         {/* 支払期限（請求書以外） */}
         {data.documentType !== DOCUMENT_TYPES.INVOICE && data.documentType !== DOCUMENT_TYPES.DELIVERY && data.documentInfo.paymentDueDate && (

@@ -103,19 +103,30 @@
   letter-spacing: 1px;
 }
 
+/* 書類番号・発行日・件名の横並び */
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.metaLeft {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .documentNumber {
   font-size: 13px;
   color: #666;
-  text-align: right;
-  margin: 10px 0;
   font-weight: 500;
 }
 
 .issueDate {
   font-size: 13px;
   color: #333;
-  text-align: right;
-  margin: 5px 0 15px 0;
   font-weight: 500;
 }
 
@@ -124,7 +135,8 @@
   display: grid;
   grid-template-columns: 100px 1fr;
   border: 1px solid #ccc;
-  margin-bottom: 20px;
+  flex: 1;
+  min-width: 0;
 }
 
 .subjectLabel {
@@ -214,36 +226,6 @@
 
 .bankInfoValue div {
   margin: 2px 0;
-}
-
-/* 合計金額セクション */
-.grandTotalSection {
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  border: 2px solid #333;
-  margin-bottom: 20px;
-}
-
-.grandTotalLabel {
-  background: #333;
-  color: white;
-  padding: 15px;
-  font-size: 16px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.grandTotalValue {
-  padding: 15px;
-  font-size: 20px;
-  font-weight: 700;
-  color: #333;
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
 }
 
 /* 支払期限セクション（請求書以外） */
@@ -371,14 +353,14 @@
   }
 
   .bankInfoTable,
-  .grandTotalSection,
   .dueDateSection,
   .subjectSection {
     grid-template-columns: 80px 1fr;
   }
 
-  .grandTotalValue {
-    font-size: 16px;
+  .metaRow {
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
