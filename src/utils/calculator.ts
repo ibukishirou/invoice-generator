@@ -38,7 +38,7 @@ export const calculateTotal = (
 };
 
 export const formatCurrency = (amount: number): string => {
-  return `¥${amount.toLocaleString('ja-JP')}`;
+  return `${amount.toLocaleString('ja-JP')}`;
 };
 
 export const getTaxTypeLabel = (taxType: TaxType): string => {
