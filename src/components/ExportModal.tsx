@@ -165,9 +165,15 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data }) => {
               </h1>
             </div>
 
-            {/* 書類番号・発行日・件名を横並びに */}
+            {/* 件名・書類番号・発行日を横並びに */}
             <div className={previewStyles.metaRow}>
-              <div className={previewStyles.metaLeft}>
+              {data.documentInfo.subject && (
+                <div className={previewStyles.subjectSection}>
+                  <div className={previewStyles.subjectLabel}>件名</div>
+                  <div className={previewStyles.subjectContent}>{data.documentInfo.subject}</div>
+                </div>
+              )}
+              <div className={previewStyles.metaRight}>
                 {data.documentInfo.documentNumber && (
                   <div className={previewStyles.documentNumber}>
                     No. {data.documentInfo.documentNumber}
@@ -177,12 +183,6 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data }) => {
                   発行日: {formatDateJapanese(data.documentInfo.issueDate)}
                 </div>
               </div>
-              {data.documentInfo.subject && (
-                <div className={previewStyles.subjectSection}>
-                  <div className={previewStyles.subjectLabel}>件名</div>
-                  <div className={previewStyles.subjectContent}>{data.documentInfo.subject}</div>
-                </div>
-              )}
             </div>
 
             {/* 取引先・自社情報 */}
@@ -228,22 +228,21 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data }) => {
                   <div className={previewStyles.bankInfoLabel}>振込先</div>
                   <div className={previewStyles.bankInfoValue}>
                     <div>{data.companyInfo.bankName} {data.companyInfo.bankBranch}</div>
-                    <div>{data.companyInfo.accountType} {data.companyInfo.accountNumber}</div>
-                    <div>{data.companyInfo.accountHolder}</div>
+                    <div>{data.companyInfo.accountType} {data.companyInfo.accountNumber} {data.companyInfo.accountHolder}</div>
                   </div>
                 </div>
                 <div className={previewStyles.bankInfoRow}>
-                  <div className={previewStyles.bankInfoLabel}>合計</div>
-                  <div className={previewStyles.bankInfoValue}>{formatCurrency(total)} 円 (内税)</div>
+                  <div className={previewStyles.bankInfoLabel}>合計（{data.taxType}）</div>
+                  <div className={previewStyles.bankInfoValue}>{formatCurrency(total)}</div>
                 </div>
               </div>
             )}
 
-            {/* 支払期限（請求書以外） */}
+            {/* 支払期限/有効期限（請求書以外） */}
             {data.documentType !== DOCUMENT_TYPES.INVOICE && data.documentType !== DOCUMENT_TYPES.DELIVERY && data.documentInfo.paymentDueDate && (
               <div className={previewStyles.dueDateSection}>
                 <div className={previewStyles.dueDateLabel}>
-                  {data.documentType === DOCUMENT_TYPES.ESTIMATE ? '有効期限' : '支払期限'}
+                  {data.documentType === DOCUMENT_TYPES.PURCHASE_ORDER || data.documentType === DOCUMENT_TYPES.ESTIMATE ? '有効期限' : '支払期限'}
                 </div>
                 <div className={previewStyles.dueDateValue}>{formatDateJapanese(data.documentInfo.paymentDueDate)}</div>
               </div>
@@ -253,11 +252,10 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data }) => {
             <table className={previewStyles.itemsTable}>
               <thead>
                 <tr>
-                  <th style={{ width: '40%' }}>品目</th>
+                  <th style={{ width: '50%' }}>品目</th>
                   <th style={{ width: '15%' }} className={previewStyles.textRight}>数量</th>
-                  <th style={{ width: '15%' }} className={previewStyles.textRight}>単価</th>
+                  <th style={{ width: '20%' }} className={previewStyles.textRight}>単価</th>
                   <th style={{ width: '15%' }} className={previewStyles.textRight}>金額</th>
-                  <th style={{ width: '15%' }}>備考</th>
                 </tr>
               </thead>
               <tbody>
@@ -269,19 +267,16 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data }) => {
                     <td className={previewStyles.textRight}>
                       {formatCurrency(calculateItemTotal(item))}
                     </td>
-                    <td>{item.note || '-'}</td>
                   </tr>
                 ))}
                 {/* テーブル内に小計・消費税を追加 */}
                 <tr className={previewStyles.subtotalRow}>
                   <td colSpan={3} className={previewStyles.textRight}>小計 ({getTaxTypeLabel(data.taxType)})</td>
                   <td className={previewStyles.textRight}>{formatCurrency(subtotal)}</td>
-                  <td></td>
                 </tr>
                 <tr className={previewStyles.taxRow}>
                   <td colSpan={3} className={previewStyles.textRight}>消費税 (10%)</td>
                   <td className={previewStyles.textRight}>{formatCurrency(tax)}</td>
-                  <td></td>
                 </tr>
               </tbody>
             </table>

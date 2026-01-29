@@ -395,16 +395,6 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
                   }}
                 />
               </div>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>備考</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  value={item.note || ''}
-                  onChange={(e) => updateItem(index, { note: e.target.value })}
-                  placeholder="任意"
-                />
-              </div>
               <button
                 className={styles.removeButton}
                 onClick={() => removeItem(index)}

@@ -84,9 +84,15 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
           </h1>
         </div>
 
-        {/* 書類番号・発行日・件名を横並びに */}
+        {/* 件名・書類番号・発行日を横並びに */}
         <div className={styles.metaRow}>
-          <div className={styles.metaLeft}>
+          {data.documentInfo.subject && (
+            <div className={styles.subjectSection}>
+              <div className={styles.subjectLabel}>件名</div>
+              <div className={styles.subjectContent}>{data.documentInfo.subject}</div>
+            </div>
+          )}
+          <div className={styles.metaRight}>
             {data.documentInfo.documentNumber && (
               <div className={styles.documentNumber}>
                 No. {data.documentInfo.documentNumber}
@@ -96,12 +102,6 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
               発行日: {formatDateJapanese(data.documentInfo.issueDate)}
             </div>
           </div>
-          {data.documentInfo.subject && (
-            <div className={styles.subjectSection}>
-              <div className={styles.subjectLabel}>件名</div>
-              <div className={styles.subjectContent}>{data.documentInfo.subject}</div>
-            </div>
-          )}
         </div>
 
         {/* 取引先・自社情報 */}
@@ -147,22 +147,21 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
               <div className={styles.bankInfoLabel}>振込先</div>
               <div className={styles.bankInfoValue}>
                 <div>{data.companyInfo.bankName} {data.companyInfo.bankBranch}</div>
-                <div>{data.companyInfo.accountType} {data.companyInfo.accountNumber}</div>
-                <div>{data.companyInfo.accountHolder}</div>
+                <div>{data.companyInfo.accountType} {data.companyInfo.accountNumber} {data.companyInfo.accountHolder}</div>
               </div>
             </div>
             <div className={styles.bankInfoRow}>
-              <div className={styles.bankInfoLabel}>合計</div>
-              <div className={styles.bankInfoValue}>{formatCurrency(total)} 円 (内税)</div>
+              <div className={styles.bankInfoLabel}>合計（{data.taxType}）</div>
+              <div className={styles.bankInfoValue}>{formatCurrency(total)}</div>
             </div>
           </div>
         )}
 
-        {/* 支払期限（請求書以外） */}
+        {/* 支払期限/有効期限（請求書以外） */}
         {data.documentType !== DOCUMENT_TYPES.INVOICE && data.documentType !== DOCUMENT_TYPES.DELIVERY && data.documentInfo.paymentDueDate && (
           <div className={styles.dueDateSection}>
             <div className={styles.dueDateLabel}>
-              {data.documentType === DOCUMENT_TYPES.ESTIMATE ? '有効期限' : '支払期限'}
+              {data.documentType === DOCUMENT_TYPES.PURCHASE_ORDER || data.documentType === DOCUMENT_TYPES.ESTIMATE ? '有効期限' : '支払期限'}
             </div>
             <div className={styles.dueDateValue}>{formatDateJapanese(data.documentInfo.paymentDueDate)}</div>
           </div>
@@ -172,11 +171,10 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
         <table className={styles.itemsTable}>
           <thead>
             <tr>
-              <th style={{ width: '40%' }}>品目</th>
+              <th style={{ width: '50%' }}>品目</th>
               <th style={{ width: '15%' }} className={styles.textRight}>数量</th>
-              <th style={{ width: '15%' }} className={styles.textRight}>単価</th>
+              <th style={{ width: '20%' }} className={styles.textRight}>単価</th>
               <th style={{ width: '15%' }} className={styles.textRight}>金額</th>
-              <th style={{ width: '15%' }}>備考</th>
             </tr>
           </thead>
           <tbody>
@@ -188,19 +186,16 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
                 <td className={styles.textRight}>
                   {formatCurrency(calculateItemTotal(item))}
                 </td>
-                <td>{item.note || '-'}</td>
               </tr>
             ))}
             {/* テーブル内に小計・消費税を追加 */}
             <tr className={styles.subtotalRow}>
               <td colSpan={3} className={styles.textRight}>小計 ({getTaxTypeLabel(data.taxType)})</td>
               <td className={styles.textRight}>{formatCurrency(subtotal)}</td>
-              <td></td>
             </tr>
             <tr className={styles.taxRow}>
               <td colSpan={3} className={styles.textRight}>消費税 (10%)</td>
               <td className={styles.textRight}>{formatCurrency(tax)}</td>
-              <td></td>
             </tr>
           </tbody>
         </table>

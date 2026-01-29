@@ -103,7 +103,7 @@
   letter-spacing: 1px;
 }
 
-/* 書類番号・発行日・件名の横並び */
+/* 件名・書類番号・発行日の横並び */
 .metaRow {
   display: flex;
   justify-content: space-between;
@@ -112,10 +112,11 @@
   gap: 20px;
 }
 
-.metaLeft {
+.metaRight {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  text-align: right;
 }
 
 .documentNumber {
