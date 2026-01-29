@@ -159,6 +159,7 @@ function App() {
         isOpen={isSaveModalOpen}
         onClose={() => setIsSaveModalOpen(false)}
         data={data}
+        onDownloadJSON={handleDownloadJSON}
       />
 
       <UploadModal
