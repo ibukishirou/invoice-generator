@@ -60,8 +60,8 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
   const getNotes = () => {
     let notes = data.documentInfo.notes || '';
     if (data.documentType === DOCUMENT_TYPES.INVOICE && data.documentInfo.includePaymentNote) {
-      if (notes) notes += '\n\n';
-      notes += '恐れ入りますが振込手数料はご負担いただくようお願いいたします';
+      if (notes) notes += '\n';
+      notes += '恐れ入りますが振込手数料はご負担いただくようお願いいたします。';
     }
     return notes;
   };

@@ -26,17 +26,25 @@ export const exportToPDF = async (
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
     
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
-    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+    // Canvas dimensions in pixels
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
     
-    const imgDisplayWidth = imgWidth * ratio;
-    const imgDisplayHeight = imgHeight * ratio;
+    // Convert pixels to mm (assuming 96 DPI)
+    const mmPerPixel = 25.4 / 96;
+    const imgWidthMM = canvasWidth * mmPerPixel;
+    const imgHeightMM = canvasHeight * mmPerPixel;
     
-    const x = (pdfWidth - imgDisplayWidth) / 2;
+    // Calculate scaling to fit within A4
+    const ratio = Math.min(pdfWidth / imgWidthMM, pdfHeight / imgHeightMM);
+    
+    const finalWidth = imgWidthMM * ratio;
+    const finalHeight = imgHeightMM * ratio;
+    
+    const x = (pdfWidth - finalWidth) / 2;
     const y = 0;
 
-    pdf.addImage(imgData, 'PNG', x, y, imgDisplayWidth, imgDisplayHeight);
+    pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
     pdf.save(`${fileName}.pdf`);
   } catch (error) {
     console.error('Failed to export PDF:', error);
