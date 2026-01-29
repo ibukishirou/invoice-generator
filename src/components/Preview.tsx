@@ -152,7 +152,7 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
             </div>
             <div className={styles.bankInfoRow}>
               <div className={styles.bankInfoLabel}>合計（{data.taxType}）</div>
-              <div className={styles.bankInfoValue}>{formatCurrency(total)}</div>
+              <div className={styles.bankInfoValue}>{formatCurrency(total)}円</div>
             </div>
           </div>
         )}

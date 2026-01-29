@@ -233,7 +233,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data }) => {
                 </div>
                 <div className={previewStyles.bankInfoRow}>
                   <div className={previewStyles.bankInfoLabel}>合計（{data.taxType}）</div>
-                  <div className={previewStyles.bankInfoValue}>{formatCurrency(total)}</div>
+                  <div className={previewStyles.bankInfoValue}>{formatCurrency(total)}円</div>
                 </div>
               </div>
             )}
