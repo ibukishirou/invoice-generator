@@ -415,7 +415,7 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave, onExport 
         <button className={styles.primaryButton} onClick={onExport}>
           出力
         </button>
-        <button className={styles.primaryButton} onClick={onSave}>
+        <button className={styles.saveButton} onClick={onSave}>
           保存
         </button>
       </div>

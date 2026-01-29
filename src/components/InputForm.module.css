@@ -324,6 +324,25 @@
   background: #e0ebff;
 }
 
+.saveButton {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #4caf50;
+  color: #fff;
+}
+
+.saveButton:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
 @media (max-width: 1200px) {
   .formContainer {
     position: static;

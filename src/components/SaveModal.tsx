@@ -11,10 +11,9 @@ interface SaveModalProps {
 }
 
 const generateDefaultName = (data: InvoiceData): string => {
-  const date = data.documentInfo.issueDate.replace(/-/g, '');
   const docType = data.documentType;
-  const client = data.clientInfo.companyName || data.clientInfo.contactPerson;
-  return `${date}_${docType}_${client}`;
+  const client = data.clientInfo.companyName || `${data.clientInfo.contactPerson}様`;
+  return `${docType} - ${client}`;
 };
 
 export default function SaveModal({ isOpen, onClose, data, onDownloadJSON }: SaveModalProps) {

@@ -16,11 +16,23 @@ interface ExportModalProps {
   onSave: () => void;
 }
 
+const generateDefaultFileName = (data: InvoiceData): string => {
+  const docType = data.documentType;
+  const client = data.clientInfo.companyName || `${data.clientInfo.contactPerson}様`;
+  return `${docType} - ${client}`;
+};
+
 const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data, onSave }) => {
   const [customFileName, setCustomFileName] = useState('');
   const [exportFormat, setExportFormat] = useState<'pdf' | 'jpg' | 'png'>('pdf');
   const [isExporting, setIsExporting] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      setCustomFileName(generateDefaultFileName(data));
+    }
+  }, [isOpen, data]);
 
   if (!isOpen) return null;
 
@@ -87,7 +99,6 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data, onSave
 
         <div className={styles.content}>
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>ファイル出力</h3>
             <div className={styles.fileNameRow}>
               <label className={styles.label}>ファイル名:</label>
               <input
@@ -131,28 +142,6 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data, onSave
             >
               {isExporting ? 'ダウンロード中...' : 'ダウンロード'}
             </button>
-            
-            <button className={styles.saveButton} onClick={onSave}>
-              この入力データに名前を付けて保存
-            </button>
-            
-            <button className={styles.jsonButton} onClick={handleDownloadJSON}>
-              JSONダウンロード
-            </button>
-            
-            <div className={styles.warning}>
-              <p>ツールの使用を終了する場合は、データ保存のためJSONをダウンロードしてください。</p>
-              <p className={styles.bold}>機微情報が含まれています。絶対に第三者にファイルを渡さないでください。</p>
-              
-              <div className={styles.infoBox}>
-                <p className={styles.infoTitle}>▼JSONの内容</p>
-                <ul className={styles.infoList}>
-                  <li>自社情報（会社名、住所、銀行口座情報など）</li>
-                  <li>保存データ（最大30件）</li>
-                  <li>ダウンロード履歴（最大10件）</li>
-                </ul>
-              </div>
-            </div>
           </div>
         </div>
 
