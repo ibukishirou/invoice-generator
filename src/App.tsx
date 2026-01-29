@@ -6,6 +6,7 @@ import HistoryModal from './components/HistoryModal';
 import SaveModal from './components/SaveModal';
 import UploadModal from './components/UploadModal';
 import ExportModal from './components/ExportModal';
+import AdSense from './components/AdSense';
 import { InvoiceData, InvoiceItem } from './types';
 import { getCurrentDate, getNextMonthEnd, generateDocumentNumber } from './utils/dateUtils';
 import { loadCompanyInfo, saveCompanyInfo } from './utils/storage';
@@ -148,6 +149,8 @@ function App() {
         />
         <Preview data={data} />
       </div>
+
+      <AdSense />
 
       <HistoryModal
         isOpen={isHistoryModalOpen}
