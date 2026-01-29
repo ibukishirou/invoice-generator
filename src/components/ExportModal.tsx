@@ -13,9 +13,10 @@ interface ExportModalProps {
   isOpen: boolean;
   onClose: () => void;
   data: InvoiceData;
+  onSave: () => void;
 }
 
-const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data }) => {
+const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data, onSave }) => {
   const [customFileName, setCustomFileName] = useState('');
   const [exportFormat, setExportFormat] = useState<'pdf' | 'jpg' | 'png'>('pdf');
   const [isExporting, setIsExporting] = useState(false);
@@ -87,7 +88,7 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data }) => {
         <div className={styles.content}>
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>ファイル出力</h3>
-            <div className={styles.formGroup}>
+            <div className={styles.fileNameRow}>
               <label className={styles.label}>ファイル名:</label>
               <input
                 type="text"
@@ -129,6 +130,10 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data }) => {
               disabled={isExporting}
             >
               {isExporting ? 'ダウンロード中...' : 'ダウンロード'}
+            </button>
+            
+            <button className={styles.saveButton} onClick={onSave}>
+              名前を付けて保存
             </button>
             
             <button className={styles.jsonButton} onClick={handleDownloadJSON}>

@@ -15,10 +15,9 @@ import { DOCUMENT_TYPES } from '../config';
 
 interface PreviewProps {
   data: InvoiceData;
-  onExportClick: () => void;
 }
 
-const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
+const Preview: React.FC<PreviewProps> = ({ data }) => {
   const previewRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -210,14 +209,6 @@ const Preview: React.FC<PreviewProps> = ({ data, onExportClick }) => {
             </div>
           </div>
         </div>
-        
-        {/* 出力ボタン */}
-        <button 
-          className={styles.floatingExportButton}
-          onClick={onExportClick}
-        >
-          出力
-        </button>
       </div>
     </div>
   );

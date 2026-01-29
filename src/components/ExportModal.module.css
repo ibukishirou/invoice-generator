@@ -82,6 +82,22 @@
   gap: 8px;
 }
 
+.fileNameRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.fileNameRow .label {
+  flex-shrink: 0;
+  min-width: 80px;
+}
+
+.fileNameRow .input {
+  flex: 1;
+}
+
 .label {
   font-size: 14px;
   font-weight: 500;
@@ -131,6 +147,7 @@
 }
 
 .downloadButton,
+.saveButton,
 .jsonButton {
   padding: 14px 20px;
   border: none;
@@ -153,6 +170,15 @@
 .downloadButton:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+.saveButton {
+  background: #5c7cfa;
+  color: white;
+}
+
+.saveButton:hover {
+  background: #4c6ef5;
 }
 
 .jsonButton {

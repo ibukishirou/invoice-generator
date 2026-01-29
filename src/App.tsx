@@ -144,8 +144,9 @@ function App() {
           data={data}
           onChange={handleDataChange}
           onSave={handleSave}
+          onExport={() => setIsExportModalOpen(true)}
         />
-        <Preview data={data} onExportClick={() => setIsExportModalOpen(true)} />
+        <Preview data={data} />
       </div>
 
       <HistoryModal
@@ -170,6 +171,7 @@ function App() {
         isOpen={isExportModalOpen}
         onClose={() => setIsExportModalOpen(false)}
         data={data}
+        onSave={handleSave}
       />
     </div>
   );

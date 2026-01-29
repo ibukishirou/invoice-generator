@@ -122,26 +122,41 @@ export const downloadJSON = (): void => {
 // JSONファイルのインポート（バリデーション付き）
 export const importFromJSON = (jsonStr: string): { success: boolean; error?: string; data?: AppDataJSON } => {
   try {
-    const data = JSON.parse(jsonStr) as AppDataJSON;
+    const data = JSON.parse(jsonStr) as any;
 
-    // バリデーション
+    // バリデーション（寛容に）
+    // versionがない場合は追加
     if (!data.version) {
-      return { success: false, error: 'バージョン情報が見つかりません' };
+      data.version = CURRENT_VERSION;
     }
 
+    // companyInfoがない場合はデフォルト値を設定
     if (!data.companyInfo) {
-      return { success: false, error: '自社情報が見つかりません' };
+      data.companyInfo = {
+        companyName: '',
+        address: '',
+        phone: '',
+        email: '',
+        bankName: '',
+        bankBranch: '',
+        accountType: '普通',
+        accountNumber: '',
+        accountHolder: '',
+        invoiceNumber: '',
+      };
     }
 
+    // savedDocumentsがない場合は空配列
     if (!Array.isArray(data.savedDocuments)) {
-      return { success: false, error: '保存データの形式が正しくありません' };
+      data.savedDocuments = [];
     }
 
+    // downloadHistoryがない場合は空配列
     if (!Array.isArray(data.downloadHistory)) {
-      return { success: false, error: 'ダウンロード履歴の形式が正しくありません' };
+      data.downloadHistory = [];
     }
 
-    return { success: true, data };
+    return { success: true, data: data as AppDataJSON };
   } catch (error) {
     return { success: false, error: 'JSONファイルの解析に失敗しました' };
   }

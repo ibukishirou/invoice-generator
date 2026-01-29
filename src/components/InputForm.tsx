@@ -16,9 +16,10 @@ interface InputFormProps {
   data: InvoiceData;
   onChange: (data: InvoiceData) => void;
   onSave: () => void;
+  onExport: () => void;
 }
 
-const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
+const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave, onExport }) => {
 
   const updateCompanyInfo = (updates: Partial<CompanyInfo>) => {
     onChange({
@@ -411,8 +412,8 @@ const InputForm: React.FC<InputFormProps> = ({ data, onChange, onSave }) => {
 
       {/* アクションボタン */}
       <div className={styles.actionButtons}>
-        <button className={styles.primaryButton} onClick={onSave}>
-          名前を付けて保存
+        <button className={styles.primaryButton} onClick={onExport}>
+          出力
         </button>
       </div>
     </div>
