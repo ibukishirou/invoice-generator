@@ -1,14 +1,15 @@
 # 請求書自動作成ツール
 
-個人事業主向けのサーバーレス請求書・見積書・納品書作成Webアプリケーションです。
+- URL: https://ibukishirou.github.io/invoice-generator/
+- 個人事業主向けのサーバーレス請求書・見積書・納品書作成Webアプリケーション
+- サーバーとの通信はなし、JSONファイルを自身でアップ・ダウンロードして管理
 
 ## 機能
 
-- 📄 **3種類の書類作成**: 請求書、見積書、納品書
-- 💰 **消費税対応**: 税抜、税込、内税、外税に対応
+- 📄 **4種類の書類作成**: 請求書、発注書、見積書、納品書
+- 💰 **消費税対応**: 内税、外税に対応
 - 🧾 **インボイス制度対応**: 登録番号の表示に対応
-- 💾 **ローカル保存**: ブラウザに自社情報と作成履歴を保存
-- 📱 **レスポンシブデザイン**: PC・スマートフォン対応
+- 💾 **履歴保存**: 作成した書類のデータを自動保存、自身で名前を付けて保存も可能
 - 🖨️ **印刷対応**: A4サイズでの印刷に対応
 - 📤 **エクスポート**: PDF、JPG、PNG形式でダウンロード可能
 
@@ -48,21 +49,11 @@ npm run preview
 
 ### GitHub Actionsによる自動デプロイ
 
-mainブランチへのpush時に自動的にGitHub Pagesにデプロイされます。
+mainブランチへのpush時に自動的にGitHub Pagesにデプロイされる。
 
 **初回セットアップ手順:**
 
 1. GitHubリポジトリの「Settings」タブを開く
 2. 左メニューから「Pages」を選択
 3. 「Source」を **「GitHub Actions」** に変更
-4. ワークフローファイル（`.github/workflows/deploy.yml`）がmainブランチにpushされると自動的にデプロイが開始されます
-
-デプロイURL: https://ibukishirou.github.io/invoice-generator/
-
-## 設定
-
-消費税率は `/src/config/constants.ts` で変更できます。
-
-```typescript
-export const TAX_RATE = 0.1; // 10%
-```
+4. ワークフローファイル（`.github/workflows/deploy.yml`）がmainブランチにpushされると自動的にデプロイが開始
