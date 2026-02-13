@@ -18,9 +18,29 @@ export default function HistoryModal({ isOpen, onClose, onLoad }: HistoryModalPr
 
   useEffect(() => {
     if (isOpen) {
+      // データを読み込む
+      const savedData = loadSavedDocuments();
+      const historyData = loadHistory();
+      setSavedDocs(savedData);
+      setHistory(historyData);
+
+      // 初期タブの決定
+      if (savedData.length > 0) {
+        setActiveTab('saved');
+      } else if (historyData.length > 0) {
+        setActiveTab('history');
+      } else {
+        // 両方空の場合はモーダルを閉じる
+        onClose();
+      }
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
       loadData();
     }
-  }, [isOpen, activeTab]);
+  }, [activeTab]);
 
   const loadData = () => {
     if (activeTab === 'history') {

@@ -106,6 +106,8 @@ function App() {
         companyInfo,
       }));
     }
+    // JSONアップロード後、データ読み込みモーダルを自動で開く
+    setIsHistoryModalOpen(true);
   };
 
   return (
