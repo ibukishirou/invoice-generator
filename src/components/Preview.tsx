@@ -192,10 +192,12 @@ const Preview: React.FC<PreviewProps> = ({ data }) => {
               <td colSpan={3} className={styles.textRight}>小計 ({getTaxTypeLabel(data.taxType)})</td>
               <td className={styles.textRight}>{formatCurrency(subtotal)}</td>
             </tr>
-            <tr className={styles.taxRow}>
-              <td colSpan={3} className={styles.textRight}>消費税 (10%)</td>
-              <td className={styles.textRight}>{formatCurrency(tax)}</td>
-            </tr>
+            {data.taxType === '外税' && (
+              <tr className={styles.taxRow}>
+                <td colSpan={3} className={styles.textRight}>消費税 (10%)</td>
+                <td className={styles.textRight}>{formatCurrency(tax)}</td>
+              </tr>
+            )}
           </tbody>
         </table>
 

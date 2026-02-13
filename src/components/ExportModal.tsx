@@ -268,10 +268,12 @@ const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, data, onSave
                   <td colSpan={3} className={previewStyles.textRight}>小計 ({getTaxTypeLabel(data.taxType)})</td>
                   <td className={previewStyles.textRight}>{formatCurrency(subtotal)}</td>
                 </tr>
-                <tr className={previewStyles.taxRow}>
-                  <td colSpan={3} className={previewStyles.textRight}>消費税 (10%)</td>
-                  <td className={previewStyles.textRight}>{formatCurrency(tax)}</td>
-                </tr>
+                {data.taxType === '外税' && (
+                  <tr className={previewStyles.taxRow}>
+                    <td colSpan={3} className={previewStyles.textRight}>消費税 (10%)</td>
+                    <td className={previewStyles.textRight}>{formatCurrency(tax)}</td>
+                  </tr>
+                )}
               </tbody>
             </table>
 
